@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient">
+
+    <!-- Orbs -->
+    <View android:id="@+id/orb_red"
+        android:layout_width="400dp" android:layout_height="400dp"
+        android:layout_marginStart="-160dp" android:layout_marginTop="-160dp"
+        android:background="@drawable/orb_red" />
+
+    <View android:id="@+id/orb_blue"
+        android:layout_width="480dp" android:layout_height="480dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="-180dp" android:layout_marginBottom="-180dp"
+        android:background="@drawable/orb_blue" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="40dp">
+
+            <!-- Logo -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="32dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🩸" android:textSize="34sp" android:layout_marginEnd="10dp" />
+                <com.bloodbound.app.core.ui.GradientTextView android:id="@+id/tv_logo_blood"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Blood" android:textSize="28sp" android:textStyle="bold" android:letterSpacing="-0.04" />
+                <com.bloodbound.app.core.ui.GradientTextView android:id="@+id/tv_logo_bound"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Bound" android:textSize="28sp" android:textStyle="bold" android:letterSpacing="-0.04" />
+            </LinearLayout>
+
+            <!-- ════════════════ STEP 1 — Role Selection ════════════════ -->
+            <LinearLayout
+                android:id="@+id/group_step1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:background="@drawable/bg_card_section"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Create an account 🩸"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:letterSpacing="-0.02"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pick your role to get started."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="24dp" />
+
+                    <!-- DONOR card -->
+                    <LinearLayout
+                        android:id="@+id/card_donor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:background="@drawable/bg_role_card_default"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
+                                android:gravity="center"
+                                android:text="💉"
+                                android:textSize="22sp"
+                                android:background="@drawable/bg_card_section"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_donor_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="I'm a Donor"
+                                    android:textSize="15.5sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="I want to donate blood and save lives."
+                                    android:textSize="12.5sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:lineSpacingMultiplier="1.5" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_donor_arrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="→"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/red_mid" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DONOR"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/red_mid"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_pill_red"
+                                android:layout_marginEnd="7dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Blood Type Tracking"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_status_badge"
+                                android:layout_marginEnd="7dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="56-Day Cycle"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_status_badge" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- REQUESTER card -->
+                    <LinearLayout
+                        android:id="@+id/card_requester"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:background="@drawable/bg_role_card_default">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
+                                android:gravity="center"
+                                android:text="🏥"
+                                android:textSize="22sp"
+                                android:background="@drawable/bg_card_section"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_requester_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="I'm a Requester"
+                                    android:textSize="15.5sp"
+                                    android:textStyle="bold"
+                                    android:textColor="@color/text_primary" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="I need blood for a patient or facility."
+                                    android:textSize="12.5sp"
+                                    android:textColor="@color/text_secondary"
+                                    android:lineSpacingMultiplier="1.5" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_requester_arrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="→"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/blue_mid" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="REQUESTER"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/blue_mid"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_pill_blue"
+                                android:layout_marginEnd="7dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Post Requests"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_status_badge"
+                                android:layout_marginEnd="7dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Track Fulfillment"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:paddingStart="8dp"
+                                android:paddingEnd="8dp"
+                                android:paddingTop="3dp"
+                                android:paddingBottom="3dp"
+                                android:background="@drawable/bg_status_badge" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Already have account link -->
+                <Button
+                    android:id="@+id/btn_already_have_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Already have an account? Sign In"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue_primary"
+                    android:background="@drawable/bg_btn_blue_ghost"
+                    android:stateListAnimator="@null"
+                    android:layout_marginBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/tv_back_home_s1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="← Back to Home"
+                    android:textSize="12.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_muted"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+
+            <!-- ════════════════ STEP 2 — Registration Form ════════════════ -->
+            <LinearLayout
+                android:id="@+id/group_step2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- Step 2 header row: Back + role badge -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="18dp">
+
+                    <TextView
+                        android:id="@+id/tv_step2_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="← Back"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_muted"
+                        android:padding="4dp"
+                        android:layout_marginEnd="12dp" />
+
+                    <TextView
+                        android:id="@+id/tv_role_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💉 DONOR"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/surface_white"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:background="@drawable/bg_btn_red_gradient" />
+
+                </LinearLayout>
+
+                <!-- Registration form card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:background="@drawable/bg_card_section"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/tv_form_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Donor Registration"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:letterSpacing="-0.02"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:id="@+id/tv_form_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your blood type helps us match you with urgent requests."
+                        android:textSize="13.5sp"
+                        android:textColor="@color/text_muted"
+                        android:layout_marginBottom="24dp" />
+
+                    <!-- Error banner -->
+                    <LinearLayout
+                        android:id="@+id/layout_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="top"
+                        android:padding="14dp"
+                        android:background="@drawable/bg_error_banner"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="gone">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="⚠ " android:textSize="13sp" android:textColor="@color/status_red" />
+                        <TextView
+                            android:id="@+id/tv_error"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/status_red"
+                            android:lineSpacingMultiplier="1.5" />
+                    </LinearLayout>
+
+                    <!-- First + Last Name row -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="16dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="FIRST NAME" android:textSize="11sp" android:textStyle="bold"
+                                android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                                android:layout_marginBottom="8dp" />
+                            <EditText android:id="@+id/et_first_name"
+                                android:layout_width="match_parent" android:layout_height="46dp"
+                                android:hint="Maria" android:inputType="textPersonName"
+                                android:paddingStart="13dp" android:paddingEnd="13dp"
+                                android:background="@drawable/bg_input_default"
+                                android:textSize="14sp" android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_muted" android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="LAST NAME" android:textSize="11sp" android:textStyle="bold"
+                                android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                                android:layout_marginBottom="8dp" />
+                            <EditText android:id="@+id/et_last_name"
+                                android:layout_width="match_parent" android:layout_height="46dp"
+                                android:hint="Santos" android:inputType="textPersonName"
+                                android:paddingStart="13dp" android:paddingEnd="13dp"
+                                android:background="@drawable/bg_input_default"
+                                android:textSize="14sp" android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_muted" android:singleLine="true" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Email -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="EMAIL ADDRESS" android:textSize="11sp" android:textStyle="bold"
+                        android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                        android:layout_marginBottom="8dp" />
+                    <EditText android:id="@+id/et_email"
+                        android:layout_width="match_parent" android:layout_height="46dp"
+                        android:hint="name@example.com" android:inputType="textEmailAddress"
+                        android:paddingStart="13dp" android:paddingEnd="13dp"
+                        android:background="@drawable/bg_input_default"
+                        android:textSize="14sp" android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:layout_marginBottom="16dp" android:singleLine="true" />
+
+                    <!-- Blood Type (DONOR only) -->
+                    <LinearLayout
+                        android:id="@+id/group_blood_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp"
+                        android:visibility="visible">
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="BLOOD TYPE" android:textSize="11sp" android:textStyle="bold"
+                            android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                            android:layout_marginBottom="8dp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_blood_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:background="@drawable/bg_input_default"
+                            android:paddingStart="13dp"
+                            android:paddingEnd="13dp" />
+
+                    </LinearLayout>
+
+                    <!-- Contact Number -->
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="CONTACT NUMBER" android:textSize="11sp" android:textStyle="bold"
+                        android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                        android:layout_marginBottom="8dp" />
+                    <EditText android:id="@+id/et_contact"
+                        android:layout_width="match_parent" android:layout_height="46dp"
+                        android:hint="e.g. 09123456789" android:inputType="phone"
+                        android:paddingStart="13dp" android:paddingEnd="13dp"
+                        android:background="@drawable/bg_input_default"
+                        android:textSize="14sp" android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:layout_marginBottom="16dp" android:singleLine="true" />
+
+                    <!-- Password + Confirm row -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="24dp">
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="PASSWORD" android:textSize="11sp" android:textStyle="bold"
+                                android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                                android:layout_marginBottom="8dp" />
+                            <EditText android:id="@+id/et_password"
+                                android:layout_width="match_parent" android:layout_height="46dp"
+                                android:hint="Min. 8 chars" android:inputType="textPassword"
+                                android:paddingStart="13dp" android:paddingEnd="13dp"
+                                android:background="@drawable/bg_input_default"
+                                android:textSize="14sp" android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_muted" android:singleLine="true" />
+                        </LinearLayout>
+
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="CONFIRM" android:textSize="11sp" android:textStyle="bold"
+                                android:textColor="@color/text_secondary" android:letterSpacing="0.09"
+                                android:layout_marginBottom="8dp" />
+                            <EditText android:id="@+id/et_confirm_password"
+                                android:layout_width="match_parent" android:layout_height="46dp"
+                                android:hint="Re-enter" android:inputType="textPassword"
+                                android:paddingStart="13dp" android:paddingEnd="13dp"
+                                android:background="@drawable/bg_input_default"
+                                android:textSize="14sp" android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_muted" android:singleLine="true" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Submit button -->
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="Register as Donor →"
+                        android:textSize="14.5sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/surface_white"
+                        android:background="@drawable/bg_btn_red_gradient"
+                        android:stateListAnimator="@null"
+                        android:layout_marginBottom="22dp" />
+
+                    <!-- OR + Sign in link -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:layout_marginBottom="22dp">
+                        <View android:layout_width="0dp" android:layout_height="2dp"
+                            android:layout_weight="1" android:background="@color/border_faint" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="OR" android:textSize="11sp" android:textStyle="bold"
+                            android:textColor="@color/text_disabled" android:letterSpacing="0.05"
+                            android:layout_marginStart="12dp" android:layout_marginEnd="12dp" />
+                        <View android:layout_width="0dp" android:layout_height="2dp"
+                            android:layout_weight="1" android:background="@color/border_faint" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_sign_in_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="Already have an account? Sign In"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blue_primary"
+                        android:background="@drawable/bg_btn_blue_ghost"
+                        android:stateListAnimator="@null" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

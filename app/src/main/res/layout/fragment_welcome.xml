@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient">
+
+    <View
+        android:id="@+id/orb_red"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="-180dp"
+        android:layout_marginTop="-160dp"
+        android:background="@drawable/orb_red" />
+
+    <View
+        android:id="@+id/orb_blue"
+        android:layout_width="480dp"
+        android:layout_height="480dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="-180dp"
+        android:layout_marginBottom="-180dp"
+        android:background="@drawable/orb_blue" />
+
+    <View
+        android:id="@+id/ring_1"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-110dp"
+        android:layout_marginEnd="-110dp"
+        android:background="@drawable/ring_red_faint" />
+
+    <View
+        android:id="@+id/ring_2"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="-70dp"
+        android:background="@drawable/ring_blue_faint" />
+
+    <View
+        android:id="@+id/ring_3"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="90dp"
+        android:background="@drawable/ring_red_faint" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
+            android:paddingTop="60dp"
+            android:paddingBottom="40dp">
+
+            <TextView
+                android:id="@+id/tv_status_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="● PLATFORM LIVE · CONNECT NOW"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.07"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/bg_status_badge"
+                android:layout_marginBottom="24dp"
+                android:alpha="0" />
+
+            <TextView
+                android:id="@+id/tv_drop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🩸"
+                android:textSize="68sp"
+                android:layout_marginBottom="20dp"
+                android:alpha="0" />
+
+            <LinearLayout
+                android:id="@+id/ll_wordmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp"
+                android:alpha="0">
+
+                <com.bloodbound.app.core.ui.GradientTextView
+                    android:id="@+id/tv_blood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blood"
+                    android:textSize="52sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.04" />
+
+                <com.bloodbound.app.core.ui.GradientTextView
+                    android:id="@+id/tv_bound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bound"
+                    android:textSize="52sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.04" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BLOOD DONATION PLATFORM"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_muted"
+                android:letterSpacing="0.18"
+                android:layout_marginBottom="16dp"
+                android:alpha="0" />
+
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="72dp"
+                android:layout_height="3dp"
+                android:background="@drawable/bg_divider_gradient"
+                android:layout_marginBottom="20dp"
+                android:alpha="0" />
+
+            <TextView
+                android:id="@+id/tv_tagline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A life-saving bridge connecting blood donors and requesters with patients in urgent need."
+                android:textSize="16sp"
+                android:textColor="@color/text_primary"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.7"
+                android:layout_marginBottom="28dp"
+                android:maxWidth="360dp"
+                android:alpha="0" />
+
+            <LinearLayout
+                android:id="@+id/ll_pills"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="32dp"
+                android:alpha="0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💉 Donors"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/bg_pill_red"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏥 Requesters"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/bg_pill_blue"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ Real-time"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/bg_pill_yellow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="20dp"
+                android:alpha="0">
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Login to Portal →"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/surface_white"
+                    android:background="@drawable/bg_btn_blue_gradient"
+                    android:layout_marginBottom="12dp"
+                    android:stateListAnimator="@null" />
+
+                <Button
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Donor or Requester?"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/red_mid"
+                    android:background="@drawable/bg_btn_red_ghost"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_trust"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:alpha="0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔒 Secure"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/border_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🕵️ Private"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/border_light" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💚 Free"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

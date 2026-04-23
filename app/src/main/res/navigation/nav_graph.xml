@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.bloodbound.app.feature.auth.ui.WelcomeFragment"
+        android:label="Welcome">
+        <action android:id="@+id/action_welcome_to_login"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" />
+        <action android:id="@+id/action_welcome_to_register"
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.bloodbound.app.feature.auth.ui.LoginFragment"
+        android:label="Login">
+        <action android:id="@+id/action_login_to_dashboard"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+        <action android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.bloodbound.app.feature.auth.ui.RegisterFragment"
+        android:label="Register">
+        <action android:id="@+id/action_register_to_dashboard"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/welcomeFragment"
+            app:popUpToInclusive="true" />
+        <action android:id="@+id/action_register_to_login"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.bloodbound.app.feature.dashboard.ui.DashboardFragment"
+        android:label="Overview" />
+
+    <fragment
+        android:id="@+id/activeRequestsFragment"
+        android:name="com.bloodbound.app.feature.requests.ui.ActiveRequestsFragment"
+        android:label="Active Requests" />
+
+    <fragment
+        android:id="@+id/myCommitmentsFragment"
+        android:name="com.bloodbound.app.feature.commitments.ui.MyCommitmentsFragment"
+        android:label="My Commitments" />
+
+    <fragment
+        android:id="@+id/requestHistoryFragment"
+        android:name="com.bloodbound.app.feature.requests.ui.RequestHistoryFragment"
+        android:label="Request History" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.bloodbound.app.feature.profile.ui.ProfileFragment"
+        android:label="My Profile" />
+
+</navigation>

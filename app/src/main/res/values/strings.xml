@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BloodBound</string>
+    <string name="blood_donation_platform">Blood Donation Platform</string>
+    <string name="tagline">A life-saving bridge connecting blood donors and requesters with patients in urgent need.</string>
+
+    <string name="login_to_portal">Login to Portal →</string>
+    <string name="sign_in">Sign In →</string>
+    <string name="signing_in">Signing in…</string>
+    <string name="create_account">Create Account</string>
+    <string name="already_have_account">Already have an account? Sign In</string>
+    <string name="back_to_home">← Back to Home</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="sign_out">← Sign Out</string>
+
+    <string name="nav_overview">Overview</string>
+    <string name="nav_my_commitments">My Commitments</string>
+    <string name="nav_active_requests">Active Requests</string>
+    <string name="nav_request_history">Request History</string>
+    <string name="nav_my_profile">My Profile</string>
+
+    <string-array name="blood_type_labels">
+        <item>O+</item><item>O−</item>
+        <item>A+</item><item>A−</item>
+        <item>B+</item><item>B−</item>
+        <item>AB+</item><item>AB−</item>
+    </string-array>
+    <string-array name="blood_type_values">
+        <item>O_POSITIVE</item><item>O_NEGATIVE</item>
+        <item>A_POSITIVE</item><item>A_NEGATIVE</item>
+        <item>B_POSITIVE</item><item>B_NEGATIVE</item>
+        <item>AB_POSITIVE</item><item>AB_NEGATIVE</item>
+    </string-array>
+</resources>

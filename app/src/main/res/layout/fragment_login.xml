@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_app_gradient">
+
+    <!-- Orbs -->
+    <View
+        android:id="@+id/orb_red"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="-160dp"
+        android:layout_marginTop="-160dp"
+        android:background="@drawable/orb_red" />
+
+    <View
+        android:id="@+id/orb_blue"
+        android:layout_width="480dp"
+        android:layout_height="480dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="-180dp"
+        android:layout_marginBottom="-180dp"
+        android:background="@drawable/orb_blue" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="40dp">
+
+            <!-- Logo row -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="36dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🩸"
+                    android:textSize="34sp"
+                    android:layout_marginEnd="10dp" />
+
+                <com.bloodbound.app.core.ui.GradientTextView
+                    android:id="@+id/tv_logo_blood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blood"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.04" />
+
+                <com.bloodbound.app.core.ui.GradientTextView
+                    android:id="@+id/tv_logo_bound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bound"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="-0.04" />
+
+            </LinearLayout>
+
+            <!-- Form card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="32dp"
+                android:background="@drawable/bg_card_section"
+                android:layout_marginBottom="16dp">
+
+                <!-- Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome back 👋"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:letterSpacing="-0.02"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign in to continue to your portal."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_muted"
+                    android:layout_marginBottom="28dp" />
+
+                <!-- Error banner -->
+                <LinearLayout
+                    android:id="@+id/layout_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:padding="14dp"
+                    android:background="@drawable/bg_error_banner"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠ "
+                        android:textSize="13sp"
+                        android:textColor="@color/status_red" />
+
+                    <TextView
+                        android:id="@+id/tv_error"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/status_red"
+                        android:lineSpacingMultiplier="1.5" />
+
+                </LinearLayout>
+
+                <!-- Email -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EMAIL ADDRESS"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:letterSpacing="0.09"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:hint="name@example.com"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:background="@drawable/bg_input_default"
+                    android:textSize="14.5sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_muted"
+                    android:layout_marginBottom="16dp"
+                    android:singleLine="true" />
+
+                <!-- Password -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASSWORD"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:letterSpacing="0.09"
+                    android:layout_marginBottom="8dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="24dp">
+
+                    <EditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:hint="••••••••"
+                        android:inputType="textPassword"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="52dp"
+                        android:background="@drawable/bg_input_default"
+                        android:textSize="14.5sp"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:singleLine="true" />
+
+                    <TextView
+                        android:id="@+id/tv_toggle_password"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center"
+                        android:text="👁️"
+                        android:textSize="16sp"
+                        android:background="@android:color/transparent"
+                        android:padding="12dp" />
+
+                </FrameLayout>
+
+                <!-- Sign In button -->
+                <Button
+                    android:id="@+id/btn_sign_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Sign In →"
+                    android:textSize="14.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/surface_white"
+                    android:background="@drawable/bg_btn_red_gradient"
+                    android:stateListAnimator="@null"
+                    android:layout_marginBottom="22dp" />
+
+                <!-- OR divider -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="22dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_weight="1"
+                        android:background="@color/border_faint" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OR"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_disabled"
+                        android:letterSpacing="0.05"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_weight="1"
+                        android:background="@color/border_faint" />
+
+                </LinearLayout>
+
+                <!-- Create Account button -->
+                <Button
+                    android:id="@+id/btn_create_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Donor or Requester? Create Account"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/blue_primary"
+                    android:background="@drawable/bg_btn_blue_ghost"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+            <!-- Back to home -->
+            <TextView
+                android:id="@+id/tv_back_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="← Back to Home"
+                android:textSize="12.5sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_muted"
+                android:padding="8dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

@@ -4,86 +4,115 @@ package com.bloodbound.app.feature.auth.data
 import com.bloodbound.app.core.network.ApiResult
 import com.bloodbound.app.core.network.StoredUser
 import com.bloodbound.app.core.network.TokenManager
-import com.google.gson.Gson
-import com.google.gson.JsonObject
+import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val authApi: AuthApi,
+    retrofit: Retrofit,
     private val tokenManager: TokenManager
 ) {
-    suspend fun login(email: String, password: String): ApiResult<StoredUser> {
+    private val api = retrofit.create(AuthApi::class.java)
+
+    suspend fun login(email: String, password: String): ApiResult<AuthResponseData> {
         return try {
-            val response = authApi.login(LoginRequest(email, password))
-            if (response.isSuccessful && response.body()?.success == true) {
-                val data = response.body()!!.data!!
-                val user = data.toStoredUser()
-                tokenManager.saveToken(data.token)
-                tokenManager.saveUser(user)
-                ApiResult.Success(user)
-            } else {
-                val msg = parseErrorBody(response.errorBody()?.string())
-                    ?: response.body()?.message
-                    ?: "Login failed."
-                ApiResult.Error(msg)
+            val response = api.login(LoginRequest(email.trim(), password))
+            val body = response.body()
+
+            when {
+                response.isSuccessful && body?.success == true && body.data != null -> {
+                    // Save JWT + user data locally
+                    tokenManager.saveToken(body.data.token)
+                    tokenManager.saveUser(body.data.toStoredUser())
+                    ApiResult.Success(body.data)
+                }
+                response.code() == 401 -> {
+                    ApiResult.Error("Incorrect email or password.")
+                }
+                else -> {
+                    val msg = body?.error?.message
+                        ?: body?.message
+                        ?: "Login failed. Please try again."
+                    ApiResult.Error(msg)
+                }
             }
         } catch (e: Exception) {
-            ApiResult.Error("Network error. Check your connection.")
+            ApiResult.Error(
+                "Network error. Please check your connection.\n${e.localizedMessage ?: ""}"
+            )
         }
     }
 
-    suspend fun register(request: RegisterRequest): ApiResult<StoredUser> {
+    suspend fun register(
+        fullName: String,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        role: String,
+        contactNumber: String,
+        bloodType: String?
+    ): ApiResult<AuthResponseData> {
         return try {
-            val response = authApi.register(request)
-            if (response.isSuccessful && response.body()?.success == true) {
-                val data = response.body()!!.data!!
-                val user = data.toStoredUser()
-                tokenManager.saveToken(data.token)
-                tokenManager.saveUser(user)
-                ApiResult.Success(user)
+            val response = api.register(
+                RegisterRequest(
+                    fullName        = fullName,
+                    email           = email.trim(),
+                    password        = password,
+                    confirmPassword = confirmPassword,
+                    role            = role,
+                    contactNumber   = contactNumber,
+                    bloodType       = bloodType
+                )
+            )
+            val body = response.body()
+
+            if (response.isSuccessful && body?.success == true && body.data != null) {
+                tokenManager.saveToken(body.data.token)
+                tokenManager.saveUser(body.data.toStoredUser())
+                ApiResult.Success(body.data)
             } else {
-                val msg = parseErrorBody(response.errorBody()?.string())
-                    ?: response.body()?.message
-                    ?: "Registration failed."
-                ApiResult.Error(msg)
+                ApiResult.Error(
+                    body?.error?.message ?: body?.message ?: "Registration failed."
+                )
             }
         } catch (e: Exception) {
-            ApiResult.Error("Network error. Check your connection.")
+            ApiResult.Error("Network error: ${e.localizedMessage ?: "Please check your connection."}")
         }
     }
 
-    suspend fun getMe(): ApiResult<StoredUser> {
+    suspend fun getMe(): ApiResult<AuthResponseData> {
         return try {
-            val response = authApi.me()
-            if (response.isSuccessful && response.body()?.success == true) {
-                val data = response.body()!!.data!!
-                val user = data.toStoredUser()
-                tokenManager.saveUser(user)
-                ApiResult.Success(user)
+            val response = api.me()
+            val body = response.body()
+
+            if (response.isSuccessful && body?.success == true && body.data != null) {
+                tokenManager.saveUser(body.data.toStoredUser())
+                ApiResult.Success(body.data)
             } else {
-                ApiResult.Error("Session expired. Please log in again.")
+                if (response.code() == 401) tokenManager.clearAll()
+                ApiResult.Error(body?.message ?: "Session expired. Please log in again.")
             }
         } catch (e: Exception) {
-            ApiResult.Error("Network error.")
+            ApiResult.Error("Network error: ${e.localizedMessage ?: ""}")
         }
     }
 
-    private fun AuthResponseData.toStoredUser() = StoredUser(
-        id = id, fullName = fullName, email = email, role = role,
-        contactNumber = contactNumber, bloodType = bloodType,
-        totalDonations = totalDonations ?: 0,
-        lastDonationDate = lastDonationDate,
-        createdAt = createdAt, profilePicture = profilePicture
-    )
-
-    private fun parseErrorBody(body: String?): String? {
-        if (body == null) return null
-        return try {
-            val obj = Gson().fromJson(body, JsonObject::class.java)
-            obj.get("error")?.asJsonObject?.get("message")?.asString
-                ?: obj.get("message")?.asString
-        } catch (e: Exception) { null }
-    }
+    fun signOut() = tokenManager.clearAll()
+    fun getStoredUser(): StoredUser? = tokenManager.getUser()
+    fun hasToken(): Boolean = tokenManager.hasToken()
 }
+
+// Convert auth response → the lightweight object stored in EncryptedSharedPreferences
+fun AuthResponseData.toStoredUser() = StoredUser(
+    id               = id,
+    fullName         = fullName,
+    email            = email,
+    role             = role,
+    contactNumber    = contactNumber,
+    bloodType        = bloodType,
+    totalDonations   = totalDonations,
+    lastDonationDate = lastDonationDate,
+    createdAt        = createdAt,
+    profilePicture   = profilePicture
+)

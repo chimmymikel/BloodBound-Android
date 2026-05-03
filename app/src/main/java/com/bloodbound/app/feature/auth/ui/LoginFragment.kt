@@ -2,13 +2,14 @@
 package com.bloodbound.app.feature.auth.ui
 
 import android.os.Bundle
-import android.text.method.HideReturnsTransformationMethod
-import android.text.method.PasswordTransformationMethod
-import android.view.*
-import androidx.core.view.isVisible
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bloodbound.app.MainActivity
 import com.bloodbound.app.R
 import com.bloodbound.app.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,11 +19,13 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+
+    // Hilt injects the ViewModel — shared with RegisterFragment
     private val viewModel: AuthViewModel by viewModels()
-    private var passwordVisible = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -31,91 +34,94 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupWordmark()
-        setupPasswordToggle()
-        setupClicks()
-        observeState()
+
+        setupClickListeners()
+        observeAuthState()
     }
 
-    private fun setupWordmark() {
-        binding.tvLogoBlood.apply {
-            gradientStartColor = 0xFFE63946.toInt()
-            gradientEndColor   = 0xFFB91C1C.toInt()
+    private fun setupClickListeners() {
+        // Sign In button
+        binding.btnLogin.setOnClickListener {
+            attemptLogin()
         }
-        binding.tvLogoBound.apply {
-            gradientStartColor = 0xFF1D4ED8.toInt()
-            gradientEndColor   = 0xFF1E40AF.toInt()
-        }
-    }
 
-    private fun setupPasswordToggle() {
-        binding.tvTogglePassword.setOnClickListener {
-            passwordVisible = !passwordVisible
-            binding.etPassword.apply {
-                transformationMethod = if (passwordVisible)
-                    HideReturnsTransformationMethod.getInstance()
-                else
-                    PasswordTransformationMethod.getInstance()
-                // Keep cursor at end
-                setSelection(text?.length ?: 0)
-            }
-            binding.tvTogglePassword.text = if (passwordVisible) "🙈" else "👁️"
+        // Done on keyboard also triggers login
+        binding.etPassword.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                attemptLogin()
+                true
+            } else false
         }
-    }
 
-    private fun setupClicks() {
-        binding.btnSignIn.setOnClickListener {
-            viewModel.login(
-                email    = binding.etEmail.text.toString(),
-                password = binding.etPassword.text.toString()
-            )
-        }
+        // Navigate to Register
         binding.btnCreateAccount.setOnClickListener {
             findNavController().navigate(R.id.action_login_to_register)
         }
-        binding.tvBackHome.setOnClickListener {
+
+        // Back to Welcome
+        binding.tvBack.setOnClickListener {
             findNavController().popBackStack()
         }
     }
 
-    private fun observeState() {
+    private fun attemptLogin() {
+        val email    = binding.etEmail.text?.toString()?.trim() ?: ""
+        val password = binding.etPassword.text?.toString() ?: ""
+        viewModel.login(email, password)
+    }
+
+    private fun observeAuthState() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AuthState.Loading -> {
-                    binding.btnSignIn.isEnabled = false
-                    binding.btnSignIn.text = "Signing in…"
-                    hideError()
-                }
-                is AuthState.Success -> {
-                    // Navigate to dashboard — pass user via nav args or shared ViewModel
-                    findNavController().navigate(R.id.action_login_to_dashboard)
-                }
-                is AuthState.Error -> {
-                    binding.btnSignIn.isEnabled = true
-                    binding.btnSignIn.text = "Sign In →"
-                    showError(state.message)
-                }
                 is AuthState.Idle -> {
-                    binding.btnSignIn.isEnabled = true
-                    binding.btnSignIn.text = "Sign In →"
-                    hideError()
+                    showIdle()
+                }
+
+                is AuthState.Loading -> {
+                    showLoading()
+                }
+
+                is AuthState.Success -> {
+                    showIdle()
+                    // Tell MainActivity which bottom nav menu to use
+                    val isDonor = state.role == "DONOR"
+                    (requireActivity() as MainActivity).setupBottomNav(isDonor)
+
+                    // Ensure we only navigate if we are currently inside the Auth Graph
+                    if (findNavController().currentDestination?.parent?.id == R.id.auth_graph) {
+                        findNavController().navigate(R.id.action_auth_to_main)
+                        viewModel.resetState()
+                    }
+                }
+
+                is AuthState.Error -> {
+                    showIdle()
+                    showError(state.message)
                 }
             }
         }
     }
 
-    private fun showError(message: String) {
-        binding.layoutError.isVisible = true
-        binding.tvError.text = message
+    private fun showLoading() {
+        binding.btnLogin.isEnabled  = false
+        binding.btnLogin.text       = "Signing in…"
+        binding.progressBar.visibility = View.VISIBLE
+        binding.layoutError.visibility  = View.GONE
     }
 
-    private fun hideError() {
-        binding.layoutError.isVisible = false
+    private fun showIdle() {
+        binding.btnLogin.isEnabled  = true
+        binding.btnLogin.text       = "Sign In →"
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showError(message: String) {
+        binding.layoutError.visibility = View.VISIBLE
+        binding.tvError.text = message
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.resetState()
         _binding = null
     }
 }

@@ -20,14 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var tokenManager: TokenManager
 
-    private val mainScreenIds = setOf(
-        R.id.dashboardFragment,
-        R.id.activeRequestsFragment,
-        R.id.myCommitmentsFragment,
-        R.id.requestHistoryFragment,
-        R.id.profileFragment
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,9 +29,10 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
+        // Simplified logic: If the current destination is inside the main_graph, show bottom nav.
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNav.visibility =
-                if (destination.id in mainScreenIds) View.VISIBLE else View.GONE
+                if (destination.parent?.id == R.id.main_graph) View.VISIBLE else View.GONE
         }
     }
 

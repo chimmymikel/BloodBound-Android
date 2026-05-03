@@ -6,49 +6,50 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bloodbound.app.core.network.ApiResult
-import com.bloodbound.app.core.network.StoredUser
-import com.bloodbound.app.core.network.TokenManager
 import com.bloodbound.app.feature.auth.data.AuthRepository
-import com.bloodbound.app.feature.auth.data.RegisterRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// All possible UI states for the auth screens
 sealed class AuthState {
     object Idle    : AuthState()
     object Loading : AuthState()
-    data class Success(val user: StoredUser) : AuthState()
-    data class Error(val message: String)    : AuthState()
+    data class Success(val role: String) : AuthState()  // role = "DONOR" or "REQUESTER"
+    data class Error(val message: String) : AuthState()
 }
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repo: AuthRepository,
-    val tokenManager: TokenManager
+    private val repository: AuthRepository
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<AuthState>(AuthState.Idle)
-    val authState: LiveData<AuthState> = _state
+    private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
+    val authState: LiveData<AuthState> = _authState
 
-    // ── Login ────────────────────────────────────────────────────────────────
-
+    // ── Login ─────────────────────────────────────────────────────────
     fun login(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
-            _state.value = AuthState.Error("Fields cannot be empty.")
+            _authState.value = AuthState.Error("Email and password are required.")
             return
         }
-        _state.value = AuthState.Loading
+
         viewModelScope.launch {
-            _state.value = when (val r = repo.login(email.trim(), password)) {
-                is ApiResult.Success -> AuthState.Success(r.data)
-                is ApiResult.Error   -> AuthState.Error(r.message)
-                else -> AuthState.Error("Unknown error.")
+            _authState.value = AuthState.Loading
+
+            when (val result = repository.login(email, password)) {
+                is ApiResult.Success -> {
+                    _authState.value = AuthState.Success(result.data.role)
+                }
+                is ApiResult.Error -> {
+                    _authState.value = AuthState.Error(result.message)
+                }
+                is ApiResult.Loading -> Unit
             }
         }
     }
 
-    // ── Register ─────────────────────────────────────────────────────────────
-
+    // ── Register ──────────────────────────────────────────────────────
     fun register(
         firstName: String,
         lastName: String,
@@ -59,46 +60,49 @@ class AuthViewModel @Inject constructor(
         contactNumber: String,
         bloodType: String?
     ) {
-        val validationError = validateRegister(
-            firstName, lastName, email, password, confirmPassword, contactNumber
-        )
-        if (validationError != null) {
-            _state.value = AuthState.Error(validationError)
+        // Client-side validation — mirrors React exactly
+        val cleanPhone = contactNumber.replace(Regex("[\\s-]"), "")
+        val phoneRegex = Regex("^(09|\\+639)\\d{9}$")
+
+        val error = when {
+            firstName.isBlank() || lastName.isBlank() ||
+                    email.isBlank() || password.isBlank() ||
+                    contactNumber.isBlank() ->
+                "All required fields must be filled."
+            !phoneRegex.matches(cleanPhone) ->
+                "Invalid contact number. Use 09XXXXXXXXX or +639XXXXXXXXX."
+            password != confirmPassword ->
+                "Passwords do not match."
+            password.length < 8 ->
+                "Password must be at least 8 characters."
+            else -> null
+        }
+
+        if (error != null) {
+            _authState.value = AuthState.Error(error)
             return
         }
-        _state.value = AuthState.Loading
+
         viewModelScope.launch {
-            val request = RegisterRequest(
+            _authState.value = AuthState.Loading
+            val result = repository.register(
                 fullName        = "${firstName.trim()} ${lastName.trim()}",
                 email           = email.trim(),
                 password        = password,
                 confirmPassword = confirmPassword,
                 role            = role,
-                contactNumber   = contactNumber.trim().replace(Regex("[\\s-]"), ""),
-                bloodType       = if (role == "DONOR") bloodType else null
+                contactNumber   = cleanPhone,
+                bloodType       = bloodType
             )
-            _state.value = when (val r = repo.register(request)) {
-                is ApiResult.Success -> AuthState.Success(r.data)
-                is ApiResult.Error   -> AuthState.Error(r.message)
-                else -> AuthState.Error("Unknown error.")
+            when (result) {
+                is ApiResult.Success -> _authState.value = AuthState.Success(result.data.role)
+                is ApiResult.Error   -> _authState.value = AuthState.Error(result.message)
+                is ApiResult.Loading -> Unit
             }
         }
     }
 
-    private fun validateRegister(
-        firstName: String, lastName: String, email: String,
-        password: String, confirmPassword: String, contactNumber: String
-    ): String? {
-        if (firstName.isBlank() || lastName.isBlank() || email.isBlank() ||
-            password.isBlank() || contactNumber.isBlank())
-            return "All required fields must be filled."
-        val clean = contactNumber.replace(Regex("[\\s-]"), "")
-        if (!Regex("^(09|\\+639)\\d{9}$").matches(clean))
-            return "Invalid number. Use 09XXXXXXXXX or +639XXXXXXXXX."
-        if (password != confirmPassword) return "Passwords do not match."
-        if (password.length < 8) return "Password must be at least 8 characters."
-        return null
+    fun resetState() {
+        _authState.value = AuthState.Idle
     }
-
-    fun resetState() { _state.value = AuthState.Idle }
 }

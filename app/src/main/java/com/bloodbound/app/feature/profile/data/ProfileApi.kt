@@ -1,10 +1,10 @@
 // FILE: app/src/main/java/com/bloodbound/app/feature/profile/data/ProfileApi.kt
 package com.bloodbound.app.feature.profile.data
 
-import com.bloodbound.app.core.network.ApiResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
+import com.bloodbound.app.feature.auth.data.ApiResponse
 
 interface ProfileApi {
     @GET("profile/{id}")

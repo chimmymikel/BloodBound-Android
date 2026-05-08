@@ -1,19 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_base">
+    android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_base">
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Commitments — coming soon"
-        android:textColor="@color/text_primary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Commitments 🎫" android:textSize="28sp"
+                android:textStyle="bold" android:textColor="@color/text_primary"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Stats row -->
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp" android:weightSum="3">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="14dp" app:strokeWidth="2dp"
+                    app:strokeColor="@color/border_light" app:cardElevation="0dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp" android:gravity="center">
+                        <TextView android:id="@+id/tv_active_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" android:textSize="28sp"
+                            android:textStyle="bold" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active" android:textSize="11sp"
+                            android:textColor="@color/text_muted"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginHorizontal="3dp"
+                    app:cardCornerRadius="14dp" app:strokeWidth="2dp"
+                    app:strokeColor="@color/border_light" app:cardElevation="0dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp" android:gravity="center">
+                        <TextView android:id="@+id/tv_completed_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" android:textSize="28sp"
+                            android:textStyle="bold" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Done" android:textSize="11sp"
+                            android:textColor="@color/text_muted"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:layout_marginStart="6dp"
+                    app:cardCornerRadius="14dp" app:strokeWidth="2dp"
+                    app:strokeColor="@color/donor_border"
+                    app:cardBackgroundColor="@color/donor_bg_light"
+                    app:cardElevation="0dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp" android:gravity="center">
+                        <TextView android:id="@+id/tv_lives_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0" android:textSize="28sp"
+                            android:textStyle="bold" android:textColor="@color/red_mid"/>
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lives" android:textSize="11sp"
+                            android:textColor="@color/red_mid"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Tab row -->
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="24dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_tab_active"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Active"
+                    android:textSize="12sp" android:layout_marginEnd="4dp"
+                    app:strokeColor="@color/donor_border" app:cornerRadius="10dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_tab_completed"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Done"
+                    android:textSize="12sp" android:layout_marginHorizontal="4dp"
+                    app:strokeColor="@color/status_green_border" app:cornerRadius="10dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_tab_cancelled"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="Cancelled"
+                    android:textSize="12sp" android:layout_marginStart="4dp"
+                    app:strokeColor="@color/border_light" app:cornerRadius="10dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"/>
+            </LinearLayout>
+
+            <ProgressBar android:id="@+id/progress_bar"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" android:layout_marginTop="24dp"
+                android:visibility="gone"/>
+            <TextView android:id="@+id/tv_empty"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textSize="16sp" android:textColor="@color/text_secondary"
+                android:textAlignment="center" android:padding="40dp"
+                android:visibility="gone"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_tickets"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" android:layout_marginTop="16dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

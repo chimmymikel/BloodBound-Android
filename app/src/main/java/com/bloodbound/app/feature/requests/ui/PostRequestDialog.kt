@@ -1,0 +1,112 @@
+package com.bloodbound.app.feature.requests.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
+import com.bloodbound.app.databinding.DialogPostRequestBinding
+import com.bloodbound.app.feature.auth.data.BLOOD_TYPES
+import com.bloodbound.app.feature.requests.data.CreateRequestBody
+import com.bloodbound.app.feature.requests.data.HospitalDto
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class PostRequestDialog : BottomSheetDialogFragment() {
+
+    private var _binding: DialogPostRequestBinding? = null
+    private val binding get() = _binding!!
+
+    // Share the SAME ViewModel instance as ActiveRequestsFragment
+    private val viewModel: RequestsViewModel by viewModels({ requireParentFragment() })
+
+    private var selectedUrgency = "STANDARD"
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = DialogPostRequestBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupBloodTypeDropdown()
+        setupUrgencyButtons()
+        setupHospitalSpinner()
+        setupButtons()
+        observeHospitals()
+        // Request hospitals to be loaded
+        viewModel.loadHospitals()
+    }
+
+    private fun setupBloodTypeDropdown() {
+        val labels  = BLOOD_TYPES.map { it.second }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, labels)
+        binding.actvBloodType.setAdapter(adapter)
+        binding.actvBloodType.setText(labels[0], false)
+    }
+
+    private fun setupUrgencyButtons() {
+        fun updateButtons() {
+            binding.btnStandard.alpha = if (selectedUrgency == "STANDARD") 1f else 0.5f
+            binding.btnHigh.alpha     = if (selectedUrgency == "HIGH")     1f else 0.5f
+            binding.btnCritical.alpha = if (selectedUrgency == "CRITICAL") 1f else 0.5f
+        }
+        binding.btnStandard.setOnClickListener { selectedUrgency = "STANDARD"; updateButtons() }
+        binding.btnHigh.setOnClickListener     { selectedUrgency = "HIGH";     updateButtons() }
+        binding.btnCritical.setOnClickListener { selectedUrgency = "CRITICAL"; updateButtons() }
+        updateButtons()
+    }
+
+    private fun setupHospitalSpinner() {
+        // Initially empty — will fill when hospitals load
+        val adapter = ArrayAdapter(requireContext(),
+            android.R.layout.simple_spinner_item, mutableListOf("Loading hospitals…"))
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerHospital.adapter = adapter
+    }
+
+    private fun observeHospitals() {
+        viewModel.hospitals.observe(viewLifecycleOwner) { hospitals ->
+            if (hospitals.isEmpty()) return@observe
+            val adapter = ArrayAdapter(requireContext(),
+                android.R.layout.simple_spinner_item, hospitals.map { it.name })
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerHospital.adapter = adapter
+        }
+    }
+
+    private fun setupButtons() {
+        binding.btnCancelDialog.setOnClickListener { dismiss() }
+
+        binding.btnPostRequest.setOnClickListener {
+            val user = viewModel.user.value ?: return@setOnClickListener
+            val hospitals = viewModel.hospitals.value ?: emptyList()
+
+            if (hospitals.isEmpty()) {
+                return@setOnClickListener
+            }
+
+            val selectedBtLabel = binding.actvBloodType.text.toString()
+            val bloodType = BLOOD_TYPES.find { it.second == selectedBtLabel }?.first ?: "O_POSITIVE"
+            val units     = binding.etUnits.text.toString().toIntOrNull()?.coerceIn(1, 20) ?: 1
+            val hospital  = hospitals.getOrNull(binding.spinnerHospital.selectedItemPosition)
+                ?: return@setOnClickListener
+            val notes     = binding.etNotes.text.toString().trim().ifBlank { null }
+
+            viewModel.postRequest(CreateRequestBody(
+                bloodType   = bloodType,
+                units       = units,
+                urgency     = selectedUrgency,
+                notes       = notes,
+                location    = "Cebu City",
+                requesterId = user.id,
+                hospitalId  = hospital.id
+            ))
+            dismiss()
+        }
+    }
+
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+}

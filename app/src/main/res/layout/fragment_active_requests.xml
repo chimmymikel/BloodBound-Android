@@ -1,19 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/bg_base">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Active Requests — coming soon"
-        android:textColor="@color/text_primary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent" android:layout_height="match_parent">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="24dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView android:id="@+id/tv_title"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:text="Active Requests 🚨" android:textSize="28sp"
+                    android:textStyle="bold" android:textColor="@color/text_primary"/>
+
+                <TextView android:id="@+id/tv_subtitle"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="14sp" android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_post_request"
+                    android:layout_width="match_parent" android:layout_height="52dp"
+                    android:text="+ Post Blood Request" android:textStyle="bold"
+                    android:textColor="@color/surface_white" android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    app:backgroundTint="@color/blue_mid" app:cornerRadius="13dp"/>
+
+                <ProgressBar android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" android:layout_marginTop="32dp"
+                    android:visibility="gone"/>
+
+                <TextView android:id="@+id/tv_error"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_error_banner" android:padding="16dp"
+                    android:textColor="@color/status_red" android:textStyle="bold"
+                    android:layout_marginTop="12dp" android:visibility="gone"/>
+
+                <TextView android:id="@+id/tv_empty"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="16sp" android:textColor="@color/text_secondary"
+                    android:textAlignment="center" android:padding="40dp"
+                    android:visibility="gone"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_requests"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" android:layout_marginTop="16dp"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

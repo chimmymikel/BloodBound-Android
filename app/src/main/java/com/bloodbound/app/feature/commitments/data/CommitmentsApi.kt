@@ -1,9 +1,10 @@
 // FILE: app/src/main/java/com/bloodbound/app/feature/commitments/data/CommitmentsApi.kt
 package com.bloodbound.app.feature.commitments.data
 
-import com.bloodbound.app.core.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.*
+import com.bloodbound.app.feature.auth.data.ApiResponse
+
 
 interface CommitmentsApi {
     @GET("commitments")

@@ -20,12 +20,19 @@
     <string name="nav_request_history">Request History</string>
     <string name="nav_my_profile">My Profile</string>
 
+    <!-- Ticket Card Strings -->
+    <string name="blood_type_label">BLOOD TYPE</string>
+    <string name="contact_requester_label">CONTACT REQUESTER</string>
+    <string name="get_directions_button">📍 Get Directions</string>
+    <string name="cancel_commitment_button">✕ Cancel Commitment</string>
+
     <string-array name="blood_type_labels">
         <item>O+</item><item>O−</item>
         <item>A+</item><item>A−</item>
         <item>B+</item><item>B−</item>
         <item>AB+</item><item>AB−</item>
     </string-array>
+
     <string-array name="blood_type_values">
         <item>O_POSITIVE</item><item>O_NEGATIVE</item>
         <item>A_POSITIVE</item><item>A_NEGATIVE</item>

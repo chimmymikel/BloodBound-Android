@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp" app:cardCornerRadius="14dp"
+    app:strokeWidth="2dp" app:strokeColor="@color/border_faint"
+    app:cardElevation="0dp" app:cardBackgroundColor="@color/surface_white">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical">
+
+            <TextView android:id="@+id/tv_blood_type"
+                android:layout_width="52dp" android:layout_height="52dp"
+                android:gravity="center" android:textSize="14sp" android:textStyle="bold"
+                android:textColor="@color/blue_mid"
+                android:background="@drawable/bg_blood_type_badge_blue"/>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:layout_marginStart="12dp">
+                <TextView android:id="@+id/tv_hospital"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="13sp" android:textColor="@color/text_secondary"/>
+                <TextView android:id="@+id/tv_notes"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="12sp" android:textColor="@color/text_muted"
+                    android:layout_marginTop="2dp"/>
+                <TextView android:id="@+id/tv_time_ago"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:textSize="11sp" android:textColor="@color/text_disabled"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView android:id="@+id/tv_commit_count"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="12sp" android:textColor="@color/text_secondary"
+            android:layout_marginTop="10dp"/>
+
+        <TextView android:id="@+id/tv_donor_cards"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="12sp" android:textColor="@color/blue_mid"
+            android:textStyle="bold" android:layout_marginTop="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_fulfill"
+            android:layout_width="match_parent" android:layout_height="44dp"
+            android:text="✔ Mark Fulfilled" android:textSize="13sp" android:textStyle="bold"
+            android:textColor="@color/status_green" android:layout_marginTop="12dp"
+            app:backgroundTint="@color/status_green_bg" app:cornerRadius="9dp"
+            app:strokeColor="@color/status_green_border" app:strokeWidth="1.5dp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

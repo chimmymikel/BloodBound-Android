@@ -1,9 +1,9 @@
 // FILE: app/src/main/java/com/bloodbound/app/feature/requests/data/RequestsApi.kt
 package com.bloodbound.app.feature.requests.data
 
-import com.bloodbound.app.core.network.ApiResponse
 import retrofit2.Response
 import retrofit2.http.*
+import com.bloodbound.app.feature.auth.data.ApiResponse
 
 interface RequestsApi {
     @GET("requests")

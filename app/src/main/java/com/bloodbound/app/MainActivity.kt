@@ -29,7 +29,28 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        // Simplified logic: If the current destination is inside the main_graph, show bottom nav.
+        // ── AUTO-LOGIN LOGIC ──────────────────────────────────────────────
+        val navInflater = navController.navInflater
+        val graph = navInflater.inflate(R.navigation.nav_graph)
+
+        if (tokenManager.hasToken()) {
+            // User is already logged in! Route directly to the main app dashboard
+            graph.setStartDestination(R.id.main_graph)
+
+            // Because we skipped the login screen, we need to set up the bottom nav right now!
+            val user = tokenManager.getUser()
+            val isDonor = user?.role == "DONOR"
+            setupBottomNav(isDonor)
+        } else {
+            // No token found. Route to the Welcome/Auth screen
+            graph.setStartDestination(R.id.auth_graph)
+        }
+
+        // Attach our dynamically configured graph to the controller
+        navController.graph = graph
+        // ──────────────────────────────────────────────────────────────────
+
+        // Your existing logic: Show bottom nav ONLY when inside main_graph
         navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.bottomNav.visibility =
                 if (destination.parent?.id == R.id.main_graph) View.VISIBLE else View.GONE

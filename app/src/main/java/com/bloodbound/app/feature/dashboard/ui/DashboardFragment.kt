@@ -13,6 +13,8 @@ import com.bloodbound.app.core.util.formatBloodType
 import com.bloodbound.app.databinding.FragmentDashboardBinding
 import com.bloodbound.app.feature.dashboard.data.RequestDto
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -41,7 +43,6 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Fetch fresh data from backend every time this screen becomes visible
         viewModel.refresh()
     }
 
@@ -56,12 +57,27 @@ class DashboardFragment : Fragment() {
         binding.rvRequests.layoutManager = LinearLayoutManager(requireContext())
     }
 
+    // ── Helpers ────────────────────────────────────────────────────────
+
+    /**
+     * Converts "2024-11-01T00:00:00" or "2024-11-01" → "Nov 1, 2024"
+     * Falls back to the raw string if parsing fails.
+     */
+    private fun formatDate(raw: String?): String {
+        if (raw.isNullOrBlank()) return "—"
+        val cleanRaw = raw.substringBefore("T")
+        return try {
+            val input  = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val output = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+            output.format(input.parse(cleanRaw)!!)
+        } catch (e: Exception) { raw }
+    }
+
     // ── Observers ──────────────────────────────────────────────────────
 
     private fun observeViewModel() {
 
-        // 1. Static user info — name, blood type, role label
-        //    Show placeholder for eligibility — wait for server response
+        // 1. Static user info
         viewModel.user.observe(viewLifecycleOwner) { user ->
             if (user == null) return@observe
 
@@ -74,39 +90,82 @@ class DashboardFragment : Fragment() {
                 "Manage your blood requests and track incoming donor commitments."
 
             if (isDonor) {
-                // Blood type card — static, never changes
-                binding.labelStat2.text = "BLOOD TYPE"
-                binding.valueStat2.text = formatBloodType(user.bloodType)
-                binding.subStat2.text   = "Registered at sign-up"
 
-                // Eligibility card — show placeholder until server responds
+                // ── Row 1: YOUR STATUS | BLOOD TYPE ───────────────────
                 binding.labelStat1.text = "YOUR STATUS"
                 binding.valueStat1.text = "Checking…"
                 binding.subStat1.text   = "Verifying eligibility with server"
 
+                binding.labelStat2.text = "BLOOD TYPE"
+                binding.valueStat2.text = formatBloodType(user.bloodType)
+                binding.valueStat2.textSize = 32f
+                binding.subStat2.text   = "Registered at sign-up"
+
+                // ── Row 2: TOTAL DONATIONS (full width) ───────────────
+                val donations = user.totalDonations ?: 0
+                binding.labelStat3.text = "TOTAL DONATIONS"
+                binding.valueStat3.text = donations.toString()
+                binding.subStat3.text   = if (donations == 1)
+                    "lifetime donation recorded"
+                else
+                    "lifetime donations recorded"
+
+                // ── Row 3: LAST DONATION DATE | MEMBER SINCE ──────────
+                binding.labelStat4.text = "LAST DONATION"
+                binding.valueStat4.text = if (!user.lastDonationDate.isNullOrBlank())
+                    formatDate(user.lastDonationDate)
+                else
+                    "Never"
+                binding.subStat4.text   = "last recorded date"
+
+                binding.labelStat5.text = "MEMBER SINCE"
+                binding.valueStat5.text = formatDate(user.createdAt)
+                binding.subStat5.text   = "account created"
+
+                // ── Visibility ────────────────────────────────────────
+                binding.cardStat3.visibility  = View.VISIBLE
+                binding.rowStat45.visibility  = View.VISIBLE
+
                 binding.tvRequestsHeader.text = "Nearby Blood Requests"
 
             } else {
-                // Requester stat cards
-                binding.labelStat1.text = "ACTIVE REQUESTS"
-                binding.valueStat1.text = "—"
-                binding.subStat1.text   = "Loading…"
 
-                binding.labelStat2.text = "CONTACT"
-                binding.valueStat2.text = user.contactNumber ?: "—"
-                binding.subStat2.text   = "Primary contact for donors"
+                // ── Row 1: CURRENT STATUS | TOTAL POSTED ──────────────
+                binding.labelStat1.text = "CURRENT STATUS"
+                binding.valueStat1.text = "Loading… 📡"
+                binding.subStat1.text   = "Checking your active requests"
+
+                binding.labelStat2.text = "TOTAL POSTED"
+                binding.valueStat2.text = "—"
+                binding.valueStat2.textSize = 32f
+                binding.subStat2.text   = "Lifetime emergency requests"
+
+                // ── Row 2: SUCCESSFULLY FULFILLED (full width) ────────
+                binding.labelStat3.text = "SUCCESSFULLY FULFILLED"
+                binding.valueStat3.text = "—"
+                binding.subStat3.text   = "Requests with enough donors"
+
+                // ── Row 3: CONTACT NUMBER | MEMBER SINCE ──────────────
+                binding.labelStat4.text = "CONTACT NUMBER"
+                binding.valueStat4.text = user.contactNumber ?: "—"
+                binding.subStat4.text   = "Primary phone contact for donors"
+
+                binding.labelStat5.text = "MEMBER SINCE"
+                binding.valueStat5.text = formatDate(user.createdAt)
+                binding.subStat5.text   = "Thank you for being part of BloodBound"
+
+                // ── Visibility ────────────────────────────────────────
+                binding.cardStat3.visibility  = View.VISIBLE
+                binding.rowStat45.visibility  = View.VISIBLE
 
                 binding.tvRequestsHeader.text = "Your Active Requests"
             }
         }
 
-        // 2. Eligibility from server — use isEligible from server (authoritative)
-        //    but recalculate daysLeft using Math.ceil to match the React web app
-        //    (server uses floor division, React uses Math.ceil — 1 day difference)
+        // 2. Eligibility — donors only
         viewModel.eligibility.observe(viewLifecycleOwner) { elig ->
             elig ?: return@observe
 
-            // Recalculate using ceil to match React web app exactly
             val user      = viewModel.user.value
             val localCalc = calcEligibility(user?.lastDonationDate)
 
@@ -114,7 +173,6 @@ class DashboardFragment : Fragment() {
                 binding.valueStat1.text = "Ready to Donate ✔️"
                 binding.subStat1.text   = "You can commit to active requests."
             } else {
-                // localCalc.daysLeft uses Math.ceil — matches React web app
                 binding.valueStat1.text = "In ${localCalc.daysLeft}d ⏳"
                 binding.subStat1.text   = "56-day waiting period in progress."
             }
@@ -135,9 +193,10 @@ class DashboardFragment : Fragment() {
                     binding.progressRequests.visibility = View.GONE
                     binding.tvError.visibility          = View.GONE
 
-                    // Update active count label for requesters
                     val user = viewModel.user.value
+
                     if (user?.role == "REQUESTER") {
+                        // ── CURRENT STATUS ─────────────────────────────
                         val activeCount = state.requests.count { it.status == "ACTIVE" }
                         binding.valueStat1.text = if (activeCount > 0)
                             "$activeCount Active 📡"
@@ -147,9 +206,20 @@ class DashboardFragment : Fragment() {
                             "Monitoring incoming commitments."
                         else
                             "You currently have no emergency requests."
+
+                        // ── TOTAL POSTED ───────────────────────────────
+                        binding.valueStat2.text = state.requests.size.toString()
+
+                        // ── SUCCESSFULLY FULFILLED ─────────────────────
+                        val fulfilledCount = state.requests.count { it.status == "FULFILLED" }
+                        binding.valueStat3.text = fulfilledCount.toString()
                     }
 
-                    if (state.requests.isEmpty()) {
+                    if (state.requests.none { it.status == "ACTIVE" } &&
+                        viewModel.user.value?.role == "REQUESTER") {
+                        binding.rvRequests.visibility  = View.GONE
+                        binding.layoutEmpty.visibility = View.VISIBLE
+                    } else if (state.requests.isEmpty()) {
                         binding.rvRequests.visibility  = View.GONE
                         binding.layoutEmpty.visibility = View.VISIBLE
                     } else {
@@ -174,6 +244,9 @@ class DashboardFragment : Fragment() {
 
     private fun setupAdapter(requests: List<RequestDto>) {
         val isDonor = viewModel.user.value?.role == "DONOR"
-        binding.rvRequests.adapter = RequestSummaryAdapter(requests, isDonor)
+        // For requesters, only show ACTIVE requests in the list
+        val filtered = if (isDonor) requests
+        else requests.filter { it.status == "ACTIVE" }
+        binding.rvRequests.adapter = RequestSummaryAdapter(filtered, isDonor)
     }
 }

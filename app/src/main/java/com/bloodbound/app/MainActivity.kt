@@ -3,8 +3,10 @@ package com.bloodbound.app
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bloodbound.app.core.network.TokenManager
@@ -34,26 +36,32 @@ class MainActivity : AppCompatActivity() {
         val graph = navInflater.inflate(R.navigation.nav_graph)
 
         if (tokenManager.hasToken()) {
-            // User is already logged in! Route directly to the main app dashboard
             graph.setStartDestination(R.id.main_graph)
-
-            // Because we skipped the login screen, we need to set up the bottom nav right now!
             val user = tokenManager.getUser()
             val isDonor = user?.role == "DONOR"
             setupBottomNav(isDonor)
         } else {
-            // No token found. Route to the Welcome/Auth screen
             graph.setStartDestination(R.id.auth_graph)
         }
 
-        // Attach our dynamically configured graph to the controller
         navController.graph = graph
         // ──────────────────────────────────────────────────────────────────
 
-        // Your existing logic: Show bottom nav ONLY when inside main_graph
+        // ── LOGOUT BUTTON ─────────────────────────────────────────────────
+        binding.btnLogout.setOnClickListener {
+            showLogoutDialog()
+        }
+        // ──────────────────────────────────────────────────────────────────
+
+        // Show Top Bar and Bottom Nav ONLY when inside main_graph
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            val isMainGraph = destination.parent?.id == R.id.main_graph
+
             binding.bottomNav.visibility =
-                if (destination.parent?.id == R.id.main_graph) View.VISIBLE else View.GONE
+                if (isMainGraph) View.VISIBLE else View.GONE
+
+            binding.appBarLayout.visibility =
+                if (isMainGraph) View.VISIBLE else View.GONE
         }
     }
 
@@ -63,4 +71,36 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.inflateMenu(menuRes)
         binding.bottomNav.setupWithNavController(navController)
     }
+
+    // ── LOGOUT HELPERS ────────────────────────────────────────────────────
+    private fun showLogoutDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Log Out")
+            .setMessage("Are you sure you want to log out?")
+            .setPositiveButton("Log Out") { dialog, _ ->
+                dialog.dismiss()
+                performLogout()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun performLogout() {
+        // 1. Clear ALL stored session data (token + user)
+        tokenManager.clearAll()
+
+        // 2. Clear the bottom nav menu so it doesn't persist stale state
+        binding.bottomNav.menu.clear()
+
+        // 3. Navigate to auth_graph and clear the entire back stack
+        //    using NavOptions.Builder() to avoid DSL resolution issues
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(navController.graph.id, true)
+            .build()
+
+        navController.navigate(R.id.auth_graph, null, navOptions)
+    }
+    // ──────────────────────────────────────────────────────────────────────
 }

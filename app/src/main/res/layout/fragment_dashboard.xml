@@ -35,7 +35,9 @@
                 android:textColor="@color/text_secondary"
                 android:layout_marginTop="4dp"/>
 
-            <!-- Stats row -->
+            <!-- ═══════════════════════════════════════════════════ -->
+            <!-- ROW 1: YOUR STATUS | BLOOD TYPE                    -->
+            <!-- ═══════════════════════════════════════════════════ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,7 +45,6 @@
                 android:layout_marginTop="24dp"
                 android:weightSum="2">
 
-                <!-- Stat card 1 -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_stat1"
                     android:layout_width="0dp"
@@ -88,7 +89,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Stat card 2 -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_stat2"
                     android:layout_width="0dp"
@@ -135,7 +135,187 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Requests section header -->
+            <!-- ═══════════════════════════════════════════════════ -->
+            <!-- ROW 2: TOTAL DONATIONS — donor only, full width    -->
+            <!-- ═══════════════════════════════════════════════════ -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_stat3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="2dp"
+                app:strokeColor="@color/border_light"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/surface_white">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="18dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/label_stat3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TOTAL DONATIONS"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_muted"
+                            android:letterSpacing="0.08"/>
+                        <TextView
+                            android:id="@+id/value_stat3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="36sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:id="@+id/sub_stat3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="lifetime donations recorded"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_muted"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🩸"
+                        android:textSize="40sp"
+                        android:layout_marginStart="12dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ═══════════════════════════════════════════════════ -->
+            <!-- ROW 3: LAST DONATION | MEMBER SINCE — donor only   -->
+            <!-- ═══════════════════════════════════════════════════ -->
+            <LinearLayout
+                android:id="@+id/row_stat_45"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:weightSum="2">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_stat4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/border_light"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/surface_white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📅"
+                            android:textSize="20sp"/>
+                        <TextView
+                            android:id="@+id/label_stat4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="LAST DONATION"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_muted"
+                            android:letterSpacing="0.08"
+                            android:layout_marginTop="8dp"/>
+                        <TextView
+                            android:id="@+id/value_stat4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:id="@+id/sub_stat4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="last recorded date"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_muted"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_stat5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/border_light"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/surface_white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🏅"
+                            android:textSize="20sp"/>
+                        <TextView
+                            android:id="@+id/label_stat5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="MEMBER SINCE"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_muted"
+                            android:letterSpacing="0.08"
+                            android:layout_marginTop="8dp"/>
+                        <TextView
+                            android:id="@+id/value_stat5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:layout_marginTop="4dp"/>
+                        <TextView
+                            android:id="@+id/sub_stat5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="account created"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_muted"
+                            android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ═══════════════════════════════════════════════════ -->
+            <!-- Requests section                                   -->
+            <!-- ═══════════════════════════════════════════════════ -->
             <TextView
                 android:id="@+id/tv_requests_header"
                 android:layout_width="match_parent"
@@ -146,7 +326,6 @@
                 android:textColor="@color/text_primary"
                 android:layout_marginTop="32dp"/>
 
-            <!-- Loading spinner -->
             <ProgressBar
                 android:id="@+id/progress_requests"
                 android:layout_width="wrap_content"
@@ -155,7 +334,6 @@
                 android:layout_marginTop="24dp"
                 android:visibility="gone"/>
 
-            <!-- Error view -->
             <TextView
                 android:id="@+id/tv_error"
                 android:layout_width="match_parent"
@@ -167,7 +345,6 @@
                 android:layout_marginTop="12dp"
                 android:visibility="gone"/>
 
-            <!-- Empty state -->
             <LinearLayout
                 android:id="@+id/layout_empty"
                 android:layout_width="match_parent"
@@ -199,7 +376,6 @@
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <!-- Requests RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_requests"
                 android:layout_width="match_parent"

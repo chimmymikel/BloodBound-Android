@@ -1,53 +1,81 @@
-// FILE: app/src/main/java/com/bloodbound/app/feature/dashboard/ui/RequestSummaryAdapter.kt
 package com.bloodbound.app.feature.dashboard.ui
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodbound.app.R
 import com.bloodbound.app.core.util.formatBloodType
 import com.bloodbound.app.core.util.timeAgo
+import com.bloodbound.app.databinding.ItemDonorRequestBinding
 import com.bloodbound.app.feature.dashboard.data.RequestDto
 
+@SuppressLint("SetTextI18n")
 class RequestSummaryAdapter(
     private val items: List<RequestDto>,
-    private val isDonor: Boolean
+    private val isDonor: Boolean,
+    // From EligibilityDto.isEligible — true means donor passed the 56-day cooldown
+    private val isEligible: Boolean = false,
+    // From EligibilityDto.daysUntilEligible — shown in the pill when not eligible
+    private val daysUntilEligible: Int = 0,
+    private val onCommit: ((RequestDto) -> Unit)? = null
 ) : RecyclerView.Adapter<RequestSummaryAdapter.VH>() {
 
-    inner class VH(view: View) : RecyclerView.ViewHolder(view) {
-        val tvBloodType:  TextView = view.findViewById(R.id.tv_blood_type)
-        val tvHospital:   TextView = view.findViewById(R.id.tv_hospital)
-        val tvUnits:      TextView = view.findViewById(R.id.tv_units)
-        val tvUrgency:    TextView = view.findViewById(R.id.tv_urgency)
-        val tvTimeAgo:    TextView = view.findViewById(R.id.tv_time_ago)
-        val tvStatus:     TextView = view.findViewById(R.id.tv_status)
-    }
+    inner class VH(val b: ItemDonorRequestBinding) : RecyclerView.ViewHolder(b.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_request_summary, parent, false)
-        return VH(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        VH(ItemDonorRequestBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
+    override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val req = items[position]
-        holder.tvBloodType.text = formatBloodType(req.bloodType)
-        holder.tvHospital.text  = req.hospitalName ?: "Hospital Facility"
-        holder.tvUnits.text     = "${req.units ?: 1} unit(s) needed"
-        holder.tvUrgency.text   = req.urgency ?: "STANDARD"
-        holder.tvTimeAgo.text   = "Posted ${timeAgo(req.createdAt)}"
-        holder.tvStatus.text    = req.status ?: ""
+        val b   = holder.b
 
-        // Color urgency label
-        val urgencyColor = when (req.urgency?.uppercase()) {
-            "CRITICAL" -> 0xFFDC2626.toInt()
-            "HIGH"     -> 0xFFEA580C.toInt()
-            else       -> 0xFF16A34A.toInt()
+        // ── Blood type ────────────────────────────────────────────
+        b.tvBloodType.text = formatBloodType(req.bloodType)
+
+        // ── Hospital ──────────────────────────────────────────────
+        b.tvHospital.text = req.hospitalName ?: "Hospital Facility"
+
+        // ── Units ─────────────────────────────────────────────────
+        val units = req.units ?: 1
+        b.tvUnits.text = "$units unit${if (units > 1) "s" else ""} needed"
+
+        // ── Time ago ──────────────────────────────────────────────
+        val ago = timeAgo(req.createdAt)
+        b.tvTimeAgo.text = if (req.location != null) "Posted $ago · ${req.location}" else "Posted $ago"
+
+        // ── Urgency badge + left accent bar ──────────────────────
+        val urgency = (req.urgency ?: "STANDARD").uppercase()
+        b.tvUrgency.text = urgency
+        val urgencyColor = when (urgency) {
+            "CRITICAL" -> Color.parseColor("#DC2626")
+            "HIGH"     -> Color.parseColor("#EA580C")
+            else       -> Color.parseColor("#16A34A")
         }
-        holder.tvUrgency.setTextColor(urgencyColor)
-    }
+        b.tvUrgency.setBackgroundResource(R.drawable.bg_status_badge)
+        b.tvUrgency.setTextColor(urgencyColor)
+        b.viewUrgencyBar.setBackgroundColor(urgencyColor)
 
-    override fun getItemCount() = items.size
+        // ── Contact / anonymous ───────────────────────────────────
+        b.tvContactStatus.text  = "🔒 Hidden until committed"
+        b.tvAnonymousLabel.text = "👤 Anonymous"
+
+        // ── RIGHT SLOT ────────────────────────────────────────────
+        // Eligible donor   → red "Commit" button (active, tappable)
+        // Not yet eligible → gray "⏳ Xd left" pill using EligibilityDto.daysUntilEligible
+        if (isDonor && isEligible) {
+            b.btnCommit.visibility       = View.VISIBLE
+            b.tvRequestExpiry.visibility = View.GONE
+            b.btnCommit.setOnClickListener { onCommit?.invoke(req) }
+        } else {
+            b.btnCommit.visibility       = View.GONE
+            b.tvRequestExpiry.visibility = View.VISIBLE
+            b.tvRequestExpiry.text       = "⏳ ${daysUntilEligible}d left"
+            b.tvRequestExpiry.setTextColor(Color.parseColor("#9CA3AF"))
+        }
+    }
 }

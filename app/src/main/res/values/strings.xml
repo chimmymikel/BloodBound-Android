@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BloodBound</string>
+
     <string name="blood_donation_platform">Blood Donation Platform</string>
     <string name="tagline">A life-saving bridge connecting blood donors and requesters with patients in urgent need.</string>
 
@@ -20,7 +21,6 @@
     <string name="nav_request_history">Request History</string>
     <string name="nav_my_profile">My Profile</string>
 
-    <!-- Ticket Card Strings -->
     <string name="blood_type_label">BLOOD TYPE</string>
     <string name="contact_requester_label">CONTACT REQUESTER</string>
     <string name="get_directions_button">📍 Get Directions</string>

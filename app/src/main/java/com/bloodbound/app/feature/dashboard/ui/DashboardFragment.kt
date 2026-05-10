@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bloodbound.app.core.util.calcEligibility
 import com.bloodbound.app.core.util.formatBloodType
 import com.bloodbound.app.databinding.FragmentDashboardBinding
 import com.bloodbound.app.feature.dashboard.data.RequestDto
@@ -71,6 +70,23 @@ class DashboardFragment : Fragment() {
             val output = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
             output.format(input.parse(cleanRaw)!!)
         } catch (e: Exception) { raw }
+    }
+
+    /**
+     * Computes days remaining until the 56-day donation cooldown expires.
+     * Uses millisecond-based floor division — identical to how the web (JS) calculates it.
+     *
+     * floor((eligibleTimestamp - nowMs) / 86_400_000)
+     */
+    private fun daysUntilEligible(lastDonationDate: String?): Int {
+        if (lastDonationDate.isNullOrBlank()) return 0
+        return try {
+            val sdf     = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val donated = sdf.parse(lastDonationDate.substringBefore("T")) ?: return 0
+            val eligibleMs = donated.time + (56L * 24 * 60 * 60 * 1_000)
+            val daysLeft   = ((eligibleMs - System.currentTimeMillis()) / 86_400_000L).toInt()
+            daysLeft.coerceAtLeast(0)
+        } catch (e: Exception) { 0 }
     }
 
     // ── Observers ──────────────────────────────────────────────────────
@@ -166,15 +182,30 @@ class DashboardFragment : Fragment() {
         viewModel.eligibility.observe(viewLifecycleOwner) { elig ->
             elig ?: return@observe
 
-            val user      = viewModel.user.value
-            val localCalc = calcEligibility(user?.lastDonationDate)
+            // elig.isEligible  → authoritative boolean from the server (use this for the gate)
+            // elig.daysUntilEligible → DO NOT USE: server computes it with pure calendar-day
+            //   math (no time-of-day), which drifts ±1–2 days vs the web.
+            //
+            // Instead, compute days locally the same way the web (JS) does:
+            //   floor((eligibleTimestamp - nowMs) / 86_400_000)
+            // This matches JS Math.floor and gives an identical result to the web dashboard.
+            val daysLeft = daysUntilEligible(viewModel.user.value?.lastDonationDate)
 
-            if (elig.isEligible || localCalc.eligible) {
+            if (elig.isEligible) {
                 binding.valueStat1.text = "Ready to Donate ✔️"
                 binding.subStat1.text   = "You can commit to active requests."
             } else {
-                binding.valueStat1.text = "In ${localCalc.daysLeft}d ⏳"
+                binding.valueStat1.text = "Eligible in $daysLeft days ⏳"
                 binding.subStat1.text   = "56-day waiting period in progress."
+            }
+
+            // Re-build the adapter now that eligibility has arrived so the
+            // right-slot (Commit vs ⏳ Xd left) reflects the latest state.
+            // Eligibility loads in parallel with requests; whichever arrives
+            // second will produce the final correct render.
+            val currentState = viewModel.requestsState.value
+            if (currentState is DashboardUiState.Success) {
+                setupAdapter(currentState.requests)
             }
         }
 
@@ -196,7 +227,6 @@ class DashboardFragment : Fragment() {
                     val user = viewModel.user.value
 
                     if (user?.role == "REQUESTER") {
-                        // ── CURRENT STATUS ─────────────────────────────
                         val activeCount = state.requests.count { it.status == "ACTIVE" }
                         binding.valueStat1.text = if (activeCount > 0)
                             "$activeCount Active 📡"
@@ -207,10 +237,8 @@ class DashboardFragment : Fragment() {
                         else
                             "You currently have no emergency requests."
 
-                        // ── TOTAL POSTED ───────────────────────────────
                         binding.valueStat2.text = state.requests.size.toString()
 
-                        // ── SUCCESSFULLY FULFILLED ─────────────────────
                         val fulfilledCount = state.requests.count { it.status == "FULFILLED" }
                         binding.valueStat3.text = fulfilledCount.toString()
                     }
@@ -244,9 +272,22 @@ class DashboardFragment : Fragment() {
 
     private fun setupAdapter(requests: List<RequestDto>) {
         val isDonor = viewModel.user.value?.role == "DONOR"
-        // For requesters, only show ACTIVE requests in the list
+
+        // isEligible        → server boolean (authoritative gate)
+        // daysUntilEligible → computed locally (matches web, avoids server timezone drift)
+        val elig              = viewModel.eligibility.value
+        val isEligible        = elig?.isEligible ?: false
+        val daysUntilEligible = daysUntilEligible(viewModel.user.value?.lastDonationDate)
+
+        // Requesters only see their own ACTIVE requests in this list
         val filtered = if (isDonor) requests
         else requests.filter { it.status == "ACTIVE" }
-        binding.rvRequests.adapter = RequestSummaryAdapter(filtered, isDonor)
+
+        binding.rvRequests.adapter = RequestSummaryAdapter(
+            items             = filtered,
+            isDonor           = isDonor,
+            isEligible        = isEligible,
+            daysUntilEligible = daysUntilEligible
+        )
     }
 }

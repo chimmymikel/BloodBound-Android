@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/auth_graph"> <!-- Starts at Auth Graph -->
+    app:startDestination="@id/auth_graph">
 
     <!-- ========================================== -->
     <!-- 1. AUTHENTICATION GRAPH                    -->
@@ -29,7 +29,6 @@
             android:id="@+id/loginFragment"
             android:name="com.bloodbound.app.feature.auth.ui.LoginFragment"
             android:label="Login">
-            <!-- Navigates to main_graph, destroying auth_graph -->
             <action android:id="@+id/action_auth_to_main"
                 app:destination="@id/main_graph"
                 app:popUpTo="@id/auth_graph"
@@ -42,7 +41,6 @@
             android:id="@+id/registerFragment"
             android:name="com.bloodbound.app.feature.auth.ui.RegisterFragment"
             android:label="Register">
-            <!-- Navigates to main_graph, destroying auth_graph -->
             <action android:id="@+id/action_auth_to_main"
                 app:destination="@id/main_graph"
                 app:popUpTo="@id/auth_graph"
@@ -52,13 +50,12 @@
         </fragment>
     </navigation>
 
-
     <!-- ========================================== -->
     <!-- 2. MAIN APP GRAPH                          -->
     <!-- ========================================== -->
     <navigation
         android:id="@+id/main_graph"
-        app:startDestination="@id/dashboardFragment"> <!-- Bottom Nav respects this! -->
+        app:startDestination="@id/dashboardFragment">
 
         <fragment
             android:id="@+id/dashboardFragment"

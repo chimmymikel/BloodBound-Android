@@ -11,6 +11,12 @@
         <item name="android:textColorSecondary">@color/text_secondary</item>
     </style>
 
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_bloodbound_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.BloodBound</item>
+    </style>
+
     <style name="Widget.BloodBound.Card" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">20dp</item>
         <item name="cardElevation">0dp</item>

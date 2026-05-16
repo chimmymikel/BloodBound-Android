@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bloodbound.app.core.util.FooterHelper
+import com.bloodbound.app.core.util.calcEligibility
 import com.bloodbound.app.core.util.formatBloodType
+import com.bloodbound.app.core.util.toTitleCase
 import com.bloodbound.app.databinding.FragmentDashboardBinding
 import com.bloodbound.app.feature.dashboard.data.RequestDto
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +41,8 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
+        // binding.footer is a FooterComponentBinding — use .root to get the View
+        FooterHelper.setup(binding.footer.root)
     }
 
     override fun onResume() {
@@ -72,23 +77,6 @@ class DashboardFragment : Fragment() {
         } catch (e: Exception) { raw }
     }
 
-    /**
-     * Computes days remaining until the 56-day donation cooldown expires.
-     * Uses millisecond-based floor division — identical to how the web (JS) calculates it.
-     *
-     * floor((eligibleTimestamp - nowMs) / 86_400_000)
-     */
-    private fun daysUntilEligible(lastDonationDate: String?): Int {
-        if (lastDonationDate.isNullOrBlank()) return 0
-        return try {
-            val sdf     = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val donated = sdf.parse(lastDonationDate.substringBefore("T")) ?: return 0
-            val eligibleMs = donated.time + (56L * 24 * 60 * 60 * 1_000)
-            val daysLeft   = ((eligibleMs - System.currentTimeMillis()) / 86_400_000L).toInt()
-            daysLeft.coerceAtLeast(0)
-        } catch (e: Exception) { 0 }
-    }
-
     // ── Observers ──────────────────────────────────────────────────────
 
     private fun observeViewModel() {
@@ -99,25 +87,21 @@ class DashboardFragment : Fragment() {
 
             val isDonor = user.role == "DONOR"
 
-            binding.tvWelcome.text  = "Welcome, ${user.fullName} 👋"
+            binding.tvWelcome.text  = "Welcome, ${user.fullName?.toTitleCase()}\u00A0👋"
+
             binding.tvSubtitle.text = if (isDonor)
-                "Track your eligibility and find blood donation requests near you."
+                "Track eligibility and find nearby requests."
             else
-                "Manage your blood requests and track incoming donor commitments."
+                "Manage requests and track donor commitments."
 
             if (isDonor) {
 
-                // ── Row 1: YOUR STATUS | BLOOD TYPE ───────────────────
+                // ── Row 1: YOUR STATUS (Full width card) ──────────────
                 binding.labelStat1.text = "YOUR STATUS"
                 binding.valueStat1.text = "Checking…"
                 binding.subStat1.text   = "Verifying eligibility with server"
 
-                binding.labelStat2.text = "BLOOD TYPE"
-                binding.valueStat2.text = formatBloodType(user.bloodType)
-                binding.valueStat2.textSize = 32f
-                binding.subStat2.text   = "Registered at sign-up"
-
-                // ── Row 2: TOTAL DONATIONS (full width) ───────────────
+                // ── Row 2 Left: TOTAL DONATIONS ───────────────────────
                 val donations = user.totalDonations ?: 0
                 binding.labelStat3.text = "TOTAL DONATIONS"
                 binding.valueStat3.text = donations.toString()
@@ -126,7 +110,13 @@ class DashboardFragment : Fragment() {
                 else
                     "lifetime donations recorded"
 
-                // ── Row 3: LAST DONATION DATE | MEMBER SINCE ──────────
+                // ── Row 2 Right: BLOOD TYPE ───────────────────────────
+                binding.labelStat2.text = "BLOOD TYPE"
+                binding.valueStat2.text = formatBloodType(user.bloodType)
+                binding.valueStat2.textSize = 32f
+                binding.subStat2.text   = "Registered at sign-up"
+
+                // ── Row 3 Left: LAST DONATION DATE ────────────────────
                 binding.labelStat4.text = "LAST DONATION"
                 binding.valueStat4.text = if (!user.lastDonationDate.isNullOrBlank())
                     formatDate(user.lastDonationDate)
@@ -134,44 +124,47 @@ class DashboardFragment : Fragment() {
                     "Never"
                 binding.subStat4.text   = "last recorded date"
 
+                // ── Row 3 Right: MEMBER SINCE ─────────────────────────
                 binding.labelStat5.text = "MEMBER SINCE"
                 binding.valueStat5.text = formatDate(user.createdAt)
                 binding.subStat5.text   = "account created"
 
                 // ── Visibility ────────────────────────────────────────
-                binding.cardStat3.visibility  = View.VISIBLE
+                binding.cardStat3Container.visibility  = View.VISIBLE
                 binding.rowStat45.visibility  = View.VISIBLE
 
                 binding.tvRequestsHeader.text = "Nearby Blood Requests"
 
             } else {
 
-                // ── Row 1: CURRENT STATUS | TOTAL POSTED ──────────────
+                // ── Row 1: CURRENT STATUS (Full width card) ───────────
                 binding.labelStat1.text = "CURRENT STATUS"
                 binding.valueStat1.text = "Loading… 📡"
                 binding.subStat1.text   = "Checking your active requests"
 
-                binding.labelStat2.text = "TOTAL POSTED"
+                // ── Row 2 Left: TOTAL POSTED ──────────────────────────
+                binding.labelStat3.text = "TOTAL POSTED"
+                binding.valueStat3.text = "—"
+                binding.subStat3.text   = "Lifetime emergency requests"
+
+                // ── Row 2 Right: SUCCESSFULLY FULFILLED ───────────────
+                binding.labelStat2.text = "SUCCESSFULLY FULFILLED"
                 binding.valueStat2.text = "—"
                 binding.valueStat2.textSize = 32f
-                binding.subStat2.text   = "Lifetime emergency requests"
+                binding.subStat2.text   = "Requests with enough donors"
 
-                // ── Row 2: SUCCESSFULLY FULFILLED (full width) ────────
-                binding.labelStat3.text = "SUCCESSFULLY FULFILLED"
-                binding.valueStat3.text = "—"
-                binding.subStat3.text   = "Requests with enough donors"
-
-                // ── Row 3: CONTACT NUMBER | MEMBER SINCE ──────────────
+                // ── Row 3 Left: CONTACT NUMBER ────────────────────────
                 binding.labelStat4.text = "CONTACT NUMBER"
                 binding.valueStat4.text = user.contactNumber ?: "—"
                 binding.subStat4.text   = "Primary phone contact for donors"
 
+                // ── Row 3 Right: MEMBER SINCE ─────────────────────────
                 binding.labelStat5.text = "MEMBER SINCE"
                 binding.valueStat5.text = formatDate(user.createdAt)
                 binding.subStat5.text   = "Thank you for being part of BloodBound"
 
                 // ── Visibility ────────────────────────────────────────
-                binding.cardStat3.visibility  = View.VISIBLE
+                binding.cardStat3Container.visibility  = View.VISIBLE
                 binding.rowStat45.visibility  = View.VISIBLE
 
                 binding.tvRequestsHeader.text = "Your Active Requests"
@@ -182,27 +175,17 @@ class DashboardFragment : Fragment() {
         viewModel.eligibility.observe(viewLifecycleOwner) { elig ->
             elig ?: return@observe
 
-            // elig.isEligible  → authoritative boolean from the server (use this for the gate)
-            // elig.daysUntilEligible → DO NOT USE: server computes it with pure calendar-day
-            //   math (no time-of-day), which drifts ±1–2 days vs the web.
-            //
-            // Instead, compute days locally the same way the web (JS) does:
-            //   floor((eligibleTimestamp - nowMs) / 86_400_000)
-            // This matches JS Math.floor and gives an identical result to the web dashboard.
-            val daysLeft = daysUntilEligible(viewModel.user.value?.lastDonationDate)
+            val userLastDonation = viewModel.user.value?.lastDonationDate
+            val eligibilityResult = calcEligibility(userLastDonation)
 
-            if (elig.isEligible) {
+            if (eligibilityResult.eligible) {
                 binding.valueStat1.text = "Ready to Donate ✔️"
                 binding.subStat1.text   = "You can commit to active requests."
             } else {
-                binding.valueStat1.text = "Eligible in $daysLeft days ⏳"
+                binding.valueStat1.text = "Eligible in ${eligibilityResult.daysLeft} days ⏳"
                 binding.subStat1.text   = "56-day waiting period in progress."
             }
 
-            // Re-build the adapter now that eligibility has arrived so the
-            // right-slot (Commit vs ⏳ Xd left) reflects the latest state.
-            // Eligibility loads in parallel with requests; whichever arrives
-            // second will produce the final correct render.
             val currentState = viewModel.requestsState.value
             if (currentState is DashboardUiState.Success) {
                 setupAdapter(currentState.requests)
@@ -237,10 +220,12 @@ class DashboardFragment : Fragment() {
                         else
                             "You currently have no emergency requests."
 
-                        binding.valueStat2.text = state.requests.size.toString()
+                        // We map total requests to Stat3 now (Left side row 2)
+                        binding.valueStat3.text = state.requests.size.toString()
 
+                        // We map fulfilled requests to Stat2 now (Right side row 2)
                         val fulfilledCount = state.requests.count { it.status == "FULFILLED" }
-                        binding.valueStat3.text = fulfilledCount.toString()
+                        binding.valueStat2.text = fulfilledCount.toString()
                     }
 
                     if (state.requests.none { it.status == "ACTIVE" } &&
@@ -273,21 +258,17 @@ class DashboardFragment : Fragment() {
     private fun setupAdapter(requests: List<RequestDto>) {
         val isDonor = viewModel.user.value?.role == "DONOR"
 
-        // isEligible        → server boolean (authoritative gate)
-        // daysUntilEligible → computed locally (matches web, avoids server timezone drift)
-        val elig              = viewModel.eligibility.value
-        val isEligible        = elig?.isEligible ?: false
-        val daysUntilEligible = daysUntilEligible(viewModel.user.value?.lastDonationDate)
+        val userLastDonation = viewModel.user.value?.lastDonationDate
+        val eligibilityResult = calcEligibility(userLastDonation)
 
-        // Requesters only see their own ACTIVE requests in this list
         val filtered = if (isDonor) requests
         else requests.filter { it.status == "ACTIVE" }
 
         binding.rvRequests.adapter = RequestSummaryAdapter(
             items             = filtered,
             isDonor           = isDonor,
-            isEligible        = isEligible,
-            daysUntilEligible = daysUntilEligible
+            isEligible        = eligibilityResult.eligible,
+            daysUntilEligible = eligibilityResult.daysLeft
         )
     }
 }

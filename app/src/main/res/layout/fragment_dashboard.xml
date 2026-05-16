@@ -13,375 +13,372 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <!-- Welcome header -->
-            <TextView
-                android:id="@+id/tv_welcome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Welcome 👋"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"/>
-
-            <TextView
-                android:id="@+id/tv_subtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Track your eligibility and find requests near you."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp"/>
-
-            <!-- ═══════════════════════════════════════════════════ -->
-            <!-- ROW 1: YOUR STATUS | BLOOD TYPE                    -->
-            <!-- ═══════════════════════════════════════════════════ -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp"
-                android:weightSum="2">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_stat1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/border_light"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/surface_white">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
-                        <TextView
-                            android:id="@+id/label_stat1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="YOUR STATUS"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_muted"
-                            android:letterSpacing="0.08"/>
-                        <TextView
-                            android:id="@+id/value_stat1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_marginTop="4dp"/>
-                        <TextView
-                            android:id="@+id/sub_stat1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_stat2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/border_light"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/surface_white">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
-                        <TextView
-                            android:id="@+id/label_stat2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="BLOOD TYPE"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_muted"
-                            android:letterSpacing="0.08"/>
-                        <TextView
-                            android:id="@+id/value_stat2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/red_mid"
-                            android:layout_marginTop="4dp"/>
-                        <TextView
-                            android:id="@+id/sub_stat2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Registered at sign-up"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- ═══════════════════════════════════════════════════ -->
-            <!-- ROW 2: TOTAL DONATIONS — donor only, full width    -->
-            <!-- ═══════════════════════════════════════════════════ -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_stat3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:cardCornerRadius="16dp"
-                app:strokeWidth="2dp"
-                app:strokeColor="@color/border_light"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface_white">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
-                    android:gravity="center_vertical">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/label_stat3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TOTAL DONATIONS"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_muted"
-                            android:letterSpacing="0.08"/>
-                        <TextView
-                            android:id="@+id/value_stat3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="36sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_marginTop="4dp"/>
-                        <TextView
-                            android:id="@+id/sub_stat3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="lifetime donations recorded"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🩸"
-                        android:textSize="40sp"
-                        android:layout_marginStart="12dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- ═══════════════════════════════════════════════════ -->
-            <!-- ROW 3: LAST DONATION | MEMBER SINCE — donor only   -->
-            <!-- ═══════════════════════════════════════════════════ -->
-            <LinearLayout
-                android:id="@+id/row_stat_45"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                android:weightSum="2">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_stat4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/border_light"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/surface_white">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📅"
-                            android:textSize="20sp"/>
-                        <TextView
-                            android:id="@+id/label_stat4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="LAST DONATION"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_muted"
-                            android:letterSpacing="0.08"
-                            android:layout_marginTop="8dp"/>
-                        <TextView
-                            android:id="@+id/value_stat4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_marginTop="4dp"/>
-                        <TextView
-                            android:id="@+id/sub_stat4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="last recorded date"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/card_stat5"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/border_light"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="@color/surface_white">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="18dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🏅"
-                            android:textSize="20sp"/>
-                        <TextView
-                            android:id="@+id/label_stat5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="MEMBER SINCE"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_muted"
-                            android:letterSpacing="0.08"
-                            android:layout_marginTop="8dp"/>
-                        <TextView
-                            android:id="@+id/value_stat5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="—"
-                            android:textSize="15sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/text_primary"
-                            android:layout_marginTop="4dp"/>
-                        <TextView
-                            android:id="@+id/sub_stat5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="account created"
-                            android:textSize="11sp"
-                            android:textColor="@color/text_muted"
-                            android:layout_marginTop="2dp"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- ═══════════════════════════════════════════════════ -->
-            <!-- Requests section                                   -->
-            <!-- ═══════════════════════════════════════════════════ -->
-            <TextView
-                android:id="@+id/tv_requests_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Nearby Blood Requests"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginTop="32dp"/>
-
-            <ProgressBar
-                android:id="@+id/progress_requests"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/tv_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_error_banner"
-                android:padding="16dp"
-                android:textColor="@color/status_red"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp"
-                android:visibility="gone"/>
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/layout_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="40dp"
-                android:visibility="gone">
+                android:padding="24dp">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_welcome"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🏥"
-                    android:textSize="48sp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No active requests right now"
-                    android:textSize="16sp"
+                    android:text="Welcome 👋"
+                    android:textSize="25sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginTop="12dp"/>
+                    android:textColor="@color/text_primary"/>
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_subtitle"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="When blood requests matching your blood type are posted, they'll appear here."
+                    android:text="Track your eligibility and find requests near you."
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
-                    android:gravity="center"
                     android:layout_marginTop="4dp"/>
-            </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_requests"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_stat1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="#FDAFBC"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#FFF0F1">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="18dp"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/label_stat1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="YOUR STATUS"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_muted"
+                                android:letterSpacing="0.08"/>
+                            <TextView
+                                android:id="@+id/value_stat1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp"/>
+                            <TextView
+                                android:id="@+id/sub_stat1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:textColor="@color/text_muted"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/card_stat3_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_stat3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/border_light"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/surface_white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="18dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/label_stat3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                text="TOTAL DONATIONS"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_muted"
+                                android:letterSpacing="0.08"/>
+                            <TextView
+                                android:id="@+id/value_stat3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="32sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp"/>
+                            <TextView
+                                android:id="@+id/sub_stat3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="lifetime recorded"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_muted"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_stat2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/border_light"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/surface_white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="18dp"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/label_stat2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="BLOOD TYPE"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_muted"
+                                android:letterSpacing="0.08"/>
+                            <TextView
+                                android:id="@+id/value_stat2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="32sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/red_mid"
+                                android:layout_marginTop="4dp"/>
+                            <TextView
+                                android:id="@+id/sub_stat2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Registered at sign-up"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_muted"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/row_stat_45"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone"
+                    android:weightSum="2">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_stat4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/border_light"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/surface_white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="18dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📅"
+                                android:textSize="20sp"/>
+                            <TextView
+                                android:id="@+id/label_stat4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="LAST DONATION"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_muted"
+                                android:letterSpacing="0.08"
+                                android:layout_marginTop="8dp"/>
+                            <TextView
+                                android:id="@+id/value_stat4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp"/>
+                            <TextView
+                                android:id="@+id/sub_stat4"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="last recorded date"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_muted"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/card_stat5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        app:cardCornerRadius="16dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/border_light"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@color/surface_white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="18dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🏅"
+                                android:textSize="20sp"/>
+                            <TextView
+                                android:id="@+id/label_stat5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="MEMBER SINCE"
+                                android:textSize="10sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_muted"
+                                android:letterSpacing="0.08"
+                                android:layout_marginTop="8dp"/>
+                            <TextView
+                                android:id="@+id/value_stat5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary"
+                                android:layout_marginTop="4dp"/>
+                            <TextView
+                                android:id="@+id/sub_stat5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="account created"
+                                android:textSize="11sp"
+                                android:textColor="@color/text_muted"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_requests_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nearby Blood Requests"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginTop="32dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progress_requests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/tv_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_error_banner"
+                    android:padding="16dp"
+                    android:textColor="@color/status_red"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="40dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🏥"
+                        android:textSize="48sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No active requests right now"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="12dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="When blood requests matching your blood type are posted, they'll appear here."
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_requests"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginTop="12dp"/>
+
+            </LinearLayout>
+            <include
+                android:id="@+id/footer"
+                layout="@layout/footer_component"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="24dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/surface_white"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🩸"
+            android:textSize="18sp"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Blood"
+            android:textColor="@color/red_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Bound"
+            android:textColor="@color/blue_primary"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cebu City, PH"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Connecting donors with those in urgent need across Cebu — fast, verified, and community-driven."
+        android:textColor="@color/text_muted"
+        android:textSize="12sp"
+        android:lineSpacingMultiplier="1.3"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="8 Types" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Supported" android:textSize="11sp" android:textColor="@color/text_muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="10+ Hospitals" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Partnered" android:textSize="11sp" android:textColor="@color/text_muted" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="56 Days" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Cycle Safety" android:textSize="11sp" android:textColor="@color/text_muted" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border_faint"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="EMERGENCY HOTLINES"
+        android:textColor="@color/text_muted"
+        android:textSize="10sp"
+        android:letterSpacing="0.1"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:text="Red Cross" android:textSize="12sp" android:textColor="@color/text_muted" />
+        <TextView android:id="@+id/footer_hotline_redcross" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="143" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/red_primary" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:text="Cebu City Med Center" android:textSize="12sp" android:textColor="@color/text_muted" />
+        <TextView android:id="@+id/footer_hotline_ccmc" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="(032) 253-1871" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/red_primary" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:text="Chong Hua Hospital" android:textSize="12sp" android:textColor="@color/text_muted" />
+        <TextView android:id="@+id/footer_hotline_chonghua" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="(032) 255-8000" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/red_primary" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="© 2026 BloodBound"
+            android:textSize="11sp"
+            android:textColor="@color/text_muted" />
+
+        <TextView android:id="@+id/footer_link_privacy" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Privacy" android:textSize="11sp" android:textColor="@color/text_muted" android:clickable="true" android:focusable="true" android:paddingEnd="12dp" />
+
+        <TextView android:id="@+id/footer_link_terms" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Terms" android:textSize="11sp" android:textColor="@color/text_muted" android:clickable="true" android:focusable="true" android:paddingEnd="12dp" />
+
+        <TextView android:id="@+id/footer_link_about" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="About" android:textSize="11sp" android:textColor="@color/text_muted" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
+
+</LinearLayout>

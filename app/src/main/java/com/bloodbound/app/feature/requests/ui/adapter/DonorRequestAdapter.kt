@@ -2,6 +2,7 @@ package com.bloodbound.app.feature.requests.ui.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodbound.app.R
@@ -49,7 +50,7 @@ class DonorRequestAdapter(
             else       -> Color.parseColor("#16A34A")
         })
 
-        // 3. Contact/Name reveal — FIX: use correct binding IDs from XML
+        // 3. Contact/Name reveal
         if (alreadyCommitted) {
             b.tvContactStatus.text  = "📞 ${req.requesterContactNumber ?: "See My Commitments"}"
             b.tvAnonymousLabel.text = "👤 ${req.requesterName ?: "Requester"}"
@@ -58,23 +59,29 @@ class DonorRequestAdapter(
             b.tvAnonymousLabel.text = "👤 Anonymous"
         }
 
-        // 4. Request Expiry Badge
-        val reqDaysRemaining = 14
-        b.tvRequestExpiry.text = "⏳ ${reqDaysRemaining}d left"
+        // 4. Donor Eligibility Badge — shows how many days until donor can commit
+        //    Visible only when donor is NOT yet eligible (matches Dashboard behavior)
+        if (!isEligible && daysLeft > 0) {
+            b.tvRequestExpiry.visibility = View.VISIBLE
+            b.tvRequestExpiry.text = "⏳ ${daysLeft}d left"
 
-        val pillBg = when {
-            reqDaysRemaining <= 3 -> R.drawable.bg_pill_red
-            reqDaysRemaining <= 7 -> R.drawable.bg_pill_yellow
-            else                  -> R.drawable.bg_pill_blue
+            val pillBg = when {
+                daysLeft <= 3  -> R.drawable.bg_pill_red
+                daysLeft <= 7  -> R.drawable.bg_pill_yellow
+                else           -> R.drawable.bg_pill_blue
+            }
+            b.tvRequestExpiry.setBackgroundResource(pillBg)
+            b.tvRequestExpiry.setTextColor(when (pillBg) {
+                R.drawable.bg_pill_red    -> Color.parseColor("#991B1B")
+                R.drawable.bg_pill_yellow -> Color.parseColor("#854D0E")
+                else                      -> Color.parseColor("#1E40AF")
+            })
+        } else {
+            // Donor is eligible — hide the waiting badge entirely
+            b.tvRequestExpiry.visibility = View.GONE
         }
-        b.tvRequestExpiry.setBackgroundResource(pillBg)
-        b.tvRequestExpiry.setTextColor(when (pillBg) {
-            R.drawable.bg_pill_red    -> Color.parseColor("#991B1B")
-            R.drawable.bg_pill_yellow -> Color.parseColor("#854D0E")
-            else                      -> Color.parseColor("#1E40AF")
-        })
 
-        // 5. Button Logic
+        // 5. Button Logic — same daysLeft source, stays in sync with badge above
         b.btnCommit.text = when {
             alreadyCommitted -> "✔ Committed"
             !isEligible      -> "⏳ ${daysLeft}d left"

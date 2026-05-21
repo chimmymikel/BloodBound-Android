@@ -1,57 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<!--
+    item_requester_request.xml
+    Used by: RequesterRequestAdapter (Active Requests screen)
+    No structural changes — this is already the reference style.
+    Confirmed identical visual tokens to item_donor_request.xml:
+      • bg_blood_type_badge_blue  ✓
+      • bg_status_badge urgency pill  ✓
+      • 4dp view_urgency_bar  ✓
+      • bg_requester_card background  ✓
+-->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp" app:cardCornerRadius="14dp"
-    app:strokeWidth="2dp" app:strokeColor="@color/border_faint"
-    app:cardElevation="0dp" app:cardBackgroundColor="@color/surface_white">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:orientation="horizontal">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="16dp">
+    <View
+        android:id="@+id/view_urgency_bar"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@color/status_red" />
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center_vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_requester_card">
 
-            <TextView android:id="@+id/tv_blood_type"
-                android:layout_width="52dp" android:layout_height="52dp"
-                android:gravity="center" android:textSize="14sp" android:textStyle="bold"
-                android:textColor="@color/blue_mid"
-                android:background="@drawable/bg_blood_type_badge_blue"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
 
-            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:orientation="vertical"
-                android:layout_marginStart="12dp">
-                <TextView android:id="@+id/tv_hospital"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="13sp" android:textColor="@color/text_secondary"/>
-                <TextView android:id="@+id/tv_notes"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="12sp" android:textColor="@color/text_muted"
-                    android:layout_marginTop="2dp"/>
-                <TextView android:id="@+id/tv_time_ago"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="11sp" android:textColor="@color/text_disabled"
-                    android:layout_marginTop="4dp"/>
+            <!-- ── Row 1: badge | hospital + urgency + units | donor count ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_blood_type"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/surface_white"
+                    android:background="@drawable/bg_blood_type_badge_blue" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_hospital"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
+
+                    <TextView
+                        android:id="@+id/tv_urgency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="2dp"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_status_badge" />
+
+                    <TextView
+                        android:id="@+id/tv_units"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary" />
+
+                </LinearLayout>
+
+                <!-- Donor count — right-aligned, only meaningful for requester -->
+                <TextView
+                    android:id="@+id/tv_commit_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary" />
+
             </LinearLayout>
+
+            <!-- ── Row 2: contact status | anonymous label ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_contact_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+                <TextView
+                    android:id="@+id/tv_anonymous_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted" />
+
+            </LinearLayout>
+
+            <!-- ── Row 3: time ago ── -->
+            <TextView
+                android:id="@+id/tv_time_ago"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="11sp"
+                android:textColor="@color/text_disabled" />
+
+            <!-- ── Donor info cards (visible only when donors have committed) ── -->
+            <TextView
+                android:id="@+id/tv_donor_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/blue_mid"
+                android:padding="4dp"
+                android:lineSpacingMultiplier="1.5"
+                android:visibility="gone" />
+
+            <!-- ── Optional notes ── -->
+            <TextView
+                android:id="@+id/tv_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textSize="12sp"
+                android:textColor="@color/text_muted"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:visibility="gone" />
+
+            <!-- ── Mark Fulfilled button ── -->
+            <Button
+                android:id="@+id/btn_fulfill"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="12dp"
+                android:text="✔ Mark Fulfilled"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/status_green"
+                android:background="@drawable/bg_btn_fulfill"
+                android:stateListAnimator="@null" />
+
         </LinearLayout>
+    </FrameLayout>
 
-        <TextView android:id="@+id/tv_commit_count"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:textSize="12sp" android:textColor="@color/text_secondary"
-            android:layout_marginTop="10dp"/>
-
-        <TextView android:id="@+id/tv_donor_cards"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:textSize="12sp" android:textColor="@color/blue_mid"
-            android:textStyle="bold" android:layout_marginTop="4dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_fulfill"
-            android:layout_width="match_parent" android:layout_height="44dp"
-            android:text="✔ Mark Fulfilled" android:textSize="13sp" android:textStyle="bold"
-            android:textColor="@color/status_green" android:layout_marginTop="12dp"
-            app:backgroundTint="@color/status_green_bg" app:cornerRadius="9dp"
-            app:strokeColor="@color/status_green_border" app:strokeWidth="1.5dp"/>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

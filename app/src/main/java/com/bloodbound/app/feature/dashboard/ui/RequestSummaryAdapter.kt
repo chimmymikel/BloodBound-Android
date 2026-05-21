@@ -1,3 +1,4 @@
+// FILE: app/src/main/java/com/bloodbound/app/feature/dashboard/ui/RequestSummaryAdapter.kt
 package com.bloodbound.app.feature.dashboard.ui
 
 import android.annotation.SuppressLint
@@ -65,17 +66,24 @@ class RequestSummaryAdapter(
         b.tvAnonymousLabel.text = "👤 Anonymous"
 
         // ── RIGHT SLOT ────────────────────────────────────────────
-        // Eligible donor   → red "Commit" button (active, tappable)
-        // Not yet eligible → gray "⏳ Xd left" pill using EligibilityDto.daysUntilEligible
-        if (isDonor && isEligible) {
-            b.btnCommit.visibility       = View.VISIBLE
-            b.tvRequestExpiry.visibility = View.GONE
-            b.btnCommit.setOnClickListener { onCommit?.invoke(req) }
+        // DONOR eligible   → red "Commit" button (active, tappable)
+        // DONOR ineligible → gray "⏳ Xd left" pill
+        // REQUESTER        → hide both; eligibility does not apply
+        if (isDonor) {
+            if (isEligible) {
+                b.btnCommit.visibility       = View.VISIBLE
+                b.tvRequestExpiry.visibility = View.GONE
+                b.btnCommit.setOnClickListener { onCommit?.invoke(req) }
+            } else {
+                b.btnCommit.visibility       = View.GONE
+                b.tvRequestExpiry.visibility = View.VISIBLE
+                b.tvRequestExpiry.text       = "⏳ ${daysUntilEligible}d left"
+                b.tvRequestExpiry.setTextColor(Color.parseColor("#9CA3AF"))
+            }
         } else {
+            // REQUESTER — neither commit nor eligibility pill
             b.btnCommit.visibility       = View.GONE
-            b.tvRequestExpiry.visibility = View.VISIBLE
-            b.tvRequestExpiry.text       = "⏳ ${daysUntilEligible}d left"
-            b.tvRequestExpiry.setTextColor(Color.parseColor("#9CA3AF"))
+            b.tvRequestExpiry.visibility = View.GONE
         }
     }
 }

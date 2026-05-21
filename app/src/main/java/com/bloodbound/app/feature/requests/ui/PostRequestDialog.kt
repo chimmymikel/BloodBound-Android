@@ -1,20 +1,20 @@
 package com.bloodbound.app.feature.requests.ui
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.bloodbound.app.databinding.DialogPostRequestBinding
 import com.bloodbound.app.feature.auth.data.BLOOD_TYPES
 import com.bloodbound.app.feature.requests.data.CreateRequestBody
-import com.bloodbound.app.feature.requests.data.HospitalDto
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostRequestDialog : BottomSheetDialogFragment() {
+class PostRequestDialog : DialogFragment() {
 
     private var _binding: DialogPostRequestBinding? = null
     private val binding get() = _binding!!
@@ -27,6 +27,16 @@ class PostRequestDialog : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = DialogPostRequestBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Kani mu-position sa standard DialogFragment sa ubos para murag BottomSheet
+        dialog?.window?.apply {
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setGravity(Gravity.BOTTOM)
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

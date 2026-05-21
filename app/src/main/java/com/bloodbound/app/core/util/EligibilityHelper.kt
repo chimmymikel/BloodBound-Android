@@ -1,4 +1,3 @@
-// FILE: app/src/main/java/com/bloodbound/app/core/util/EligibilityHelper.kt
 package com.bloodbound.app.core.util
 
 import java.time.LocalDate
@@ -9,17 +8,15 @@ data class EligibilityResult(val eligible: Boolean, val daysLeft: Int)
 fun calcEligibility(lastDonationDate: String?): EligibilityResult {
     if (lastDonationDate.isNullOrBlank()) return EligibilityResult(true, 0)
     return try {
-        // Take only the date portion (first 10 chars: "yyyy-MM-dd")
         val last = LocalDate.parse(lastDonationDate.take(10))
         val now  = LocalDate.now()
 
-        val diffDays  = ChronoUnit.DAYS.between(last, now)
-        val remaining = 56 - diffDays
+        val diffDays = ChronoUnit.DAYS.between(last, now)
 
-        EligibilityResult(
-            eligible = remaining <= 0,
-            daysLeft = maxOf(remaining.toInt(), 0)
-        )
+        val eligible = diffDays >= 56
+        val daysLeft = if (eligible) 0 else maxOf((56 - diffDays - 1).toInt(), 0)
+
+        EligibilityResult(eligible = eligible, daysLeft = daysLeft)
     } catch (e: Exception) {
         EligibilityResult(true, 0)
     }

@@ -1,4 +1,3 @@
-// FILE: app/src/main/java/com/bloodbound/app/feature/requests/data/RequestModels.kt
 package com.bloodbound.app.feature.requests.data
 
 data class RequestDto(
@@ -30,7 +29,8 @@ data class CreateRequestBody(
     val notes: String?,
     val location: String,
     val requesterId: Long,
-    val hospitalId: Long
+    val hospitalId: Long,
+    val status: String
 )
 
 data class HospitalDto(

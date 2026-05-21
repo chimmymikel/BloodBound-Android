@@ -1,9 +1,11 @@
 package com.bloodbound.app.feature.requests.ui.adapter
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodbound.app.R
 import com.bloodbound.app.core.util.formatBloodType
@@ -30,25 +32,37 @@ class DonorRequestAdapter(
     override fun onBindViewHolder(holder: VH, position: Int) {
         val req = items[position]
         val b   = holder.b
+        val context = b.root.context
 
         val alreadyCommitted = committedIds.contains(req.id)
         val blockedByOther   = !alreadyCommitted && hasActiveCommitment
         val disabled         = alreadyCommitted || !isEligible || blockedByOther
 
-        // 1. Core Info
+        // 1. Core Info (Cleaned up units text)
         b.tvBloodType.text = formatBloodType(req.bloodType)
         b.tvHospital.text  = req.hospitalName ?: "Hospital Facility"
-        b.tvUnits.text     = "${req.units} unit(s) needed${if (req.notes != null) " · ${req.notes}" else ""}"
+        b.tvUnits.text     = "${req.units} unit needed${if (req.notes != null) " · ${req.notes}" else ""}"
         b.tvTimeAgo.text   = "Posted ${timeAgo(req.createdAt)}${if (req.location != null) " · ${req.location}" else ""}"
 
-        // 2. Urgency Badge
+        // 2. Dynamic Colors for Left Accent Bar & Urgency Pill
+        val urgencyColor = when (req.urgency.uppercase()) {
+            "CRITICAL" -> ContextCompat.getColor(context, R.color.status_red)
+            "HIGH"     -> ContextCompat.getColor(context, R.color.status_orange)
+            else       -> ContextCompat.getColor(context, R.color.status_green)
+        }
+
+        // Color the left accent bar
+        b.viewUrgencyBar.setBackgroundColor(urgencyColor)
+
+        // Color the Urgency Pill
         b.tvUrgency.text = req.urgency.uppercase()
-        b.tvUrgency.setBackgroundResource(R.drawable.bg_status_badge)
-        b.tvUrgency.setTextColor(when (req.urgency.uppercase()) {
-            "CRITICAL" -> Color.parseColor("#DC2626")
-            "HIGH"     -> Color.parseColor("#EA580C")
-            else       -> Color.parseColor("#16A34A")
-        })
+        b.tvUrgency.setTextColor(urgencyColor)
+        b.tvUrgency.setBackgroundResource(R.drawable.bg_pill_outline)
+
+        // Mutate prevents scrolling from breaking other rows' colors
+        val urgencyBg = b.tvUrgency.background.mutate() as? GradientDrawable
+        val strokePx = (1 * context.resources.displayMetrics.density).toInt()
+        urgencyBg?.setStroke(strokePx, urgencyColor)
 
         // 3. Contact/Name reveal
         if (alreadyCommitted) {
@@ -59,29 +73,23 @@ class DonorRequestAdapter(
             b.tvAnonymousLabel.text = "👤 Anonymous"
         }
 
-        // 4. Donor Eligibility Badge — shows how many days until donor can commit
-        //    Visible only when donor is NOT yet eligible (matches Dashboard behavior)
+        // 4. Donor Eligibility Badge — Muted Gray Design matching web
         if (!isEligible && daysLeft > 0) {
             b.tvRequestExpiry.visibility = View.VISIBLE
             b.tvRequestExpiry.text = "⏳ ${daysLeft}d left"
 
-            val pillBg = when {
-                daysLeft <= 3  -> R.drawable.bg_pill_red
-                daysLeft <= 7  -> R.drawable.bg_pill_yellow
-                else           -> R.drawable.bg_pill_blue
-            }
-            b.tvRequestExpiry.setBackgroundResource(pillBg)
-            b.tvRequestExpiry.setTextColor(when (pillBg) {
-                R.drawable.bg_pill_red    -> Color.parseColor("#991B1B")
-                R.drawable.bg_pill_yellow -> Color.parseColor("#854D0E")
-                else                      -> Color.parseColor("#1E40AF")
-            })
+            // Force the muted gray styling
+            b.tvRequestExpiry.setBackgroundResource(R.drawable.bg_pill_outline)
+            b.tvRequestExpiry.setTextColor(ContextCompat.getColor(context, R.color.text_secondary))
+
+            val expiryBg = b.tvRequestExpiry.background.mutate() as? GradientDrawable
+            val grayBorder = ContextCompat.getColor(context, R.color.border_light)
+            expiryBg?.setStroke(strokePx, grayBorder)
         } else {
-            // Donor is eligible — hide the waiting badge entirely
             b.tvRequestExpiry.visibility = View.GONE
         }
 
-        // 5. Button Logic — same daysLeft source, stays in sync with badge above
+        // 5. Button Logic
         b.btnCommit.text = when {
             alreadyCommitted -> "✔ Committed"
             !isEligible      -> "⏳ ${daysLeft}d left"

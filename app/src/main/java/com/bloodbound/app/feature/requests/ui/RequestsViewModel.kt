@@ -35,7 +35,6 @@ class RequestsViewModel @Inject constructor(
     private val _state = MutableLiveData<RequestsUiState>()
     val state: LiveData<RequestsUiState> = _state
 
-    // IDs of requests this donor has already committed to
     private val _committedIds = MutableLiveData<Set<Long>>(emptySet())
     val committedIds: LiveData<Set<Long>> = _committedIds
 
@@ -45,7 +44,6 @@ class RequestsViewModel @Inject constructor(
     private val _toast = MutableLiveData<String?>()
     val toast: LiveData<String?> = _toast
 
-    // One-shot: tells fragment to navigate to commitments after committing
     private val _navigateToCommitments = MutableLiveData(false)
     val navigateToCommitments: LiveData<Boolean> = _navigateToCommitments
 
@@ -61,7 +59,6 @@ class RequestsViewModel @Inject constructor(
             _state.value = RequestsUiState.Loading
 
             if (user.role == "DONOR") {
-                // 1. Load which requests this donor already committed to
                 val commitsResult = commitmentsRepository.getCommitments(
                     mapOf("donorId" to user.id.toString())
                 )
@@ -72,7 +69,6 @@ class RequestsViewModel @Inject constructor(
                         .toSet()
                 }
 
-                // 2. Load active requests (O_NEGATIVE sees all — universal donor)
                 val params = mutableMapOf("status" to "ACTIVE")
                 if (user.bloodType != null && user.bloodType != "O_NEGATIVE") {
                     params["bloodType"] = user.bloodType
@@ -84,7 +80,6 @@ class RequestsViewModel @Inject constructor(
                 }
 
             } else {
-                // Requester: load all their own requests
                 val params = mapOf("requesterId" to user.id.toString())
                 when (val r = requestsRepository.getRequests(params)) {
                     is ApiResult.Success -> _state.value = RequestsUiState.Success(r.data)
@@ -106,7 +101,6 @@ class RequestsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val r = commitmentsRepository.createCommitment(requestId)) {
                 is ApiResult.Success -> {
-                    // Optimistically add to committed set
                     _committedIds.value = (_committedIds.value ?: emptySet()) + requestId
                     _toast.value = "Committed! Go to My Commitments for details. 🩸"
                     _navigateToCommitments.value = true
@@ -135,6 +129,7 @@ class RequestsViewModel @Inject constructor(
             when (val r = requestsRepository.createRequest(body)) {
                 is ApiResult.Success -> {
                     _toast.value = "Request posted successfully! 🩸"
+                    kotlinx.coroutines.delay(300)
                     refresh()
                 }
                 is ApiResult.Error -> _toast.value = r.message

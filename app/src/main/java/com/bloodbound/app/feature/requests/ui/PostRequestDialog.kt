@@ -19,7 +19,6 @@ class PostRequestDialog : DialogFragment() {
     private var _binding: DialogPostRequestBinding? = null
     private val binding get() = _binding!!
 
-    // Share the SAME ViewModel instance as ActiveRequestsFragment
     private val viewModel: RequestsViewModel by viewModels({ requireParentFragment() })
 
     private var selectedUrgency = "STANDARD"
@@ -31,7 +30,6 @@ class PostRequestDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        // Kani mu-position sa standard DialogFragment sa ubos para murag BottomSheet
         dialog?.window?.apply {
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setGravity(Gravity.BOTTOM)
@@ -46,15 +44,14 @@ class PostRequestDialog : DialogFragment() {
         setupHospitalSpinner()
         setupButtons()
         observeHospitals()
-        // Request hospitals to be loaded
         viewModel.loadHospitals()
     }
 
     private fun setupBloodTypeDropdown() {
-        val labels  = BLOOD_TYPES.map { it.second }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, labels)
-        binding.actvBloodType.setAdapter(adapter)
-        binding.actvBloodType.setText(labels[0], false)
+        val labels = BLOOD_TYPES.map { it.second }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, labels)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerBloodType.adapter = adapter
     }
 
     private fun setupUrgencyButtons() {
@@ -70,7 +67,6 @@ class PostRequestDialog : DialogFragment() {
     }
 
     private fun setupHospitalSpinner() {
-        // Initially empty — will fill when hospitals load
         val adapter = ArrayAdapter(requireContext(),
             android.R.layout.simple_spinner_item, mutableListOf("Loading hospitals…"))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -98,21 +94,34 @@ class PostRequestDialog : DialogFragment() {
                 return@setOnClickListener
             }
 
-            val selectedBtLabel = binding.actvBloodType.text.toString()
+            val unitsInput = binding.etUnits.text.toString().toIntOrNull() ?: 0
+
+            if (unitsInput > 20) {
+                binding.etUnits.error = "Maximum of 20 units only!"
+                binding.etUnits.requestFocus()
+                return@setOnClickListener
+            }
+            if (unitsInput < 1) {
+                binding.etUnits.error = "At least 1 unit is required!"
+                binding.etUnits.requestFocus()
+                return@setOnClickListener
+            }
+
+            val selectedBtLabel = binding.spinnerBloodType.selectedItem.toString()
             val bloodType = BLOOD_TYPES.find { it.second == selectedBtLabel }?.first ?: "O_POSITIVE"
-            val units     = binding.etUnits.text.toString().toIntOrNull()?.coerceIn(1, 20) ?: 1
             val hospital  = hospitals.getOrNull(binding.spinnerHospital.selectedItemPosition)
                 ?: return@setOnClickListener
             val notes     = binding.etNotes.text.toString().trim().ifBlank { null }
 
             viewModel.postRequest(CreateRequestBody(
                 bloodType   = bloodType,
-                units       = units,
+                units       = unitsInput,
                 urgency     = selectedUrgency,
                 notes       = notes,
                 location    = "Cebu City",
                 requesterId = user.id,
-                hospitalId  = hospital.id
+                hospitalId  = hospital.id,
+                status      = "ACTIVE"
             ))
             dismiss()
         }

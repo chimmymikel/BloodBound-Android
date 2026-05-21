@@ -17,14 +17,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- Urgency accent bar — full card height, colour set in adapter -->
         <View
             android:id="@+id/view_urgency_bar"
             android:layout_width="4dp"
             android:layout_height="match_parent"
-            android:background="@color/red_mid"/>
+            android:background="@color/status_orange"/>
 
-        <!-- Card body -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -35,24 +33,12 @@
             android:paddingTop="14dp"
             android:paddingBottom="12dp">
 
-            <!--
-              TOP ROW
-              ───────────────────────────────────────────────────────
-              [Blood badge]  [vertical column]
-                             ├─ Hospital name (full width, wraps if long)
-                             └─ [Urgency chip] ·· spacer ·· [Right slot]
-
-              Putting the chips INSIDE the same vertical column as the
-              hospital name means they are always flush-aligned and never
-              appear as a detached floating row.
-            -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="top">
 
-                <!-- Blood type badge -->
                 <TextView
                     android:id="@+id/tv_blood_type"
                     android:layout_width="48dp"
@@ -64,7 +50,6 @@
                     android:background="@drawable/bg_blood_type_badge"
                     tools:text="O+"/>
 
-                <!-- Hospital name + chips column -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -72,7 +57,6 @@
                     android:orientation="vertical"
                     android:layout_marginStart="12dp">
 
-                    <!-- Hospital name — full width, never truncated -->
                     <TextView
                         android:id="@+id/tv_hospital"
                         android:layout_width="match_parent"
@@ -85,11 +69,6 @@
                         android:ellipsize="end"
                         tools:text="Cebu Doctors' University Hospital"/>
 
-                    <!--
-                      Chips row — directly below the hospital name inside
-                      the same column, so it's visually anchored to it.
-                      Urgency chip left-aligned; right slot pushed to end.
-                    -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -97,7 +76,6 @@
                         android:gravity="center_vertical"
                         android:layout_marginTop="6dp">
 
-                        <!-- Urgency chip -->
                         <TextView
                             android:id="@+id/tv_urgency"
                             android:layout_width="wrap_content"
@@ -107,25 +85,18 @@
                             android:letterSpacing="0.05"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
-                            android:background="@drawable/bg_status_badge"
+                            android:background="@drawable/bg_pill_outline"
                             tools:text="STANDARD"/>
 
-                        <!-- Pushes right slot to the far end -->
                         <View
                             android:layout_width="0dp"
                             android:layout_height="1dp"
                             android:layout_weight="1"/>
 
-                        <!--
-                          RIGHT SLOT — FrameLayout so Commit and pill
-                          occupy the exact same space; card never reflows.
-                          minWidth on both views keeps it stable.
-                        -->
                         <FrameLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
-                            <!-- ⏳ Xd left — shown when NOT eligible -->
                             <TextView
                                 android:id="@+id/tv_request_expiry"
                                 android:layout_width="wrap_content"
@@ -137,11 +108,10 @@
                                 android:textStyle="bold"
                                 android:paddingHorizontal="10dp"
                                 android:paddingVertical="5dp"
-                                android:background="@drawable/bg_pill_expiry"
+                                android:background="@drawable/bg_pill_outline"
                                 android:visibility="visible"
                                 tools:text="⏳ 14d left"/>
 
-                            <!-- Commit — shown when eligible -->
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btn_commit"
                                 android:layout_width="wrap_content"
@@ -165,7 +135,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -173,12 +142,6 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="10dp"/>
 
-            <!--
-              META SECTION
-              ─────────────────────────────────────────────────────
-              Three separate lines — each gets its full width.
-              Nothing is truncated, nothing competes for space.
-            -->
             <TextView
                 android:id="@+id/tv_units"
                 android:layout_width="wrap_content"
@@ -219,7 +182,6 @@
 
             </LinearLayout>
 
-            <!-- Timestamp — own full line, never truncated -->
             <TextView
                 android:id="@+id/tv_time_ago"
                 android:layout_width="match_parent"
@@ -231,5 +193,4 @@
 
         </LinearLayout>
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>

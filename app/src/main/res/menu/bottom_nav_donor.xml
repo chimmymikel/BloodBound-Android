@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/dashboardFragment"
-        android:icon="@android:drawable/ic_menu_today"
+        android:icon="@drawable/ic_nav_overview"
         android:title="Overview" />
     <item android:id="@+id/myCommitmentsFragment"
-        android:icon="@android:drawable/ic_menu_agenda"
+        android:icon="@drawable/ic_nav_commitments"
         android:title="Commitments" />
     <item android:id="@+id/activeRequestsFragment"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_nav_requests"
         android:title="Requests" />
     <item android:id="@+id/profileFragment"
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@drawable/ic_nav_profile"
         android:title="Profile" />
 </menu>

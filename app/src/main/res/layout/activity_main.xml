@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"> <!-- Slight off-white background to match your web -->
+    android:background="#F8FAFC">
 
     <!-- 1. THE GLOBAL BRAND HEADER -->
     <com.google.android.material.appbar.AppBarLayout
@@ -24,7 +24,6 @@
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp">
 
-            <!-- Logo, Brand Text, and Logout Container -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -60,13 +59,13 @@
                     android:textStyle="bold"
                     android:letterSpacing="-0.02" />
 
-                <!-- Empty Space to push the logout icon to the right edge -->
+                <!-- Push logout to the right -->
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <!-- The Logout Button -->
+                <!-- Logout Button (door + arrow icon) -->
                 <ImageView
                     android:id="@+id/btn_logout"
                     android:layout_width="24dp"
@@ -74,14 +73,14 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
-                    android:src="@android:drawable/ic_lock_power_off"
+                    android:src="@drawable/ic_logout"
                     app:tint="#94A3B8" />
 
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 2. YOUR EXISTING NAV HOST (Moved below the app bar) -->
+    <!-- 2. NAV HOST -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -93,15 +92,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 3. YOUR EXISTING BOTTOM NAV -->
+    <!-- 3. IMPROVED BOTTOM NAV -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:background="#FFFFFF"
-        app:itemIconTint="#64748B"
-        app:itemTextColor="#64748B"
+        android:elevation="12dp"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:itemIconSize="26dp"
+        app:itemActiveIndicatorStyle="@style/BottomNavIndicator"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

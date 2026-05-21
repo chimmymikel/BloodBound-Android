@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen // 🩸 ADDED THIS IMPORT
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -78,17 +78,23 @@ class MainActivity : AppCompatActivity() {
 
     // ── LOGOUT HELPERS ────────────────────────────────────────────────────
     private fun showLogoutDialog() {
-        AlertDialog.Builder(this)
+        val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
             .setTitle("Log Out")
             .setMessage("Are you sure you want to log out?")
-            .setPositiveButton("Log Out") { dialog, _ ->
-                dialog.dismiss()
+            .setPositiveButton("Log Out") { d, _ ->
+                d.dismiss()
                 performLogout()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
+            .setNegativeButton("Cancel") { d, _ ->
+                d.dismiss()
             }
             .show()
+
+        // Set AFTER show() so Material3 doesn't override it
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(android.graphics.Color.parseColor("#DC2626"))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            .setTextColor(android.graphics.Color.parseColor("#64748B"))
     }
 
     private fun performLogout() {
@@ -99,7 +105,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.menu.clear()
 
         // 3. Navigate to auth_graph and clear the entire back stack
-        //    using NavOptions.Builder() to avoid DSL resolution issues
         val navOptions = NavOptions.Builder()
             .setPopUpTo(navController.graph.id, true)
             .build()

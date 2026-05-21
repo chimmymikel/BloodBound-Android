@@ -59,4 +59,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- Bottom Nav active pill indicator -->
+    <style name="BottomNavIndicator">
+        <item name="android:color">#FEE2E2</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
+    </style>
+
 </resources>

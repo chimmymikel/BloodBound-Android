@@ -253,15 +253,8 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- ══════════════════════════════════════════════
-             ZONE 3 · ELIGIBILITY STATUS
-             Most actionable info for a donor — shown
-             immediately after identity, above the fold
-             ══════════════════════════════════════════════ -->
-        <!--
-          Eligibility card: red theme matching the web version.
-          Light pink (#FFF0F0) bg + red border + red text.
-          Hourglass icon on the right mirrors the web layout exactly.
-        -->
+     ZONE 3 · ELIGIBILITY STATUS
+     ══════════════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_eligibility"
             android:layout_width="match_parent"
@@ -272,7 +265,7 @@
             app:cardCornerRadius="16dp"
             app:strokeWidth="1.5dp"
             app:strokeColor="@color/red_mid"
-            app:cardBackgroundColor="#FFF0F0"
+            app:cardBackgroundColor="#FEF2F2"
             app:cardElevation="0dp">
 
             <LinearLayout
@@ -293,7 +286,9 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
+                    <!-- ✅ ID added so Fragment can recolor it -->
                     <TextView
+                        android:id="@+id/tv_eligibility_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ELIGIBILITY STATUS"
@@ -311,7 +306,9 @@
                         android:textColor="@color/red_mid"
                         android:layout_marginTop="4dp"/>
 
+                    <!-- ✅ ID added so Fragment can recolor + update text -->
                     <TextView
+                        android:id="@+id/tv_eligibility_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="56-day waiting period from your last donation date"
@@ -322,8 +319,9 @@
 
                 </LinearLayout>
 
-                <!-- Hourglass icon — right side, matches web -->
+                <!-- ✅ IDs added to icon card and icon text for dynamic color -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_eligibility_icon"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_marginStart="12dp"
@@ -332,6 +330,7 @@
                     app:strokeWidth="0dp"
                     app:cardBackgroundColor="#FFD6D6">
                     <TextView
+                        android:id="@+id/tv_eligibility_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

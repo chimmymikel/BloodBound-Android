@@ -26,7 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
-                    android:text="Active Requests 🚨"
+                    android:text="Active Requests"
                     android:textSize="26sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />

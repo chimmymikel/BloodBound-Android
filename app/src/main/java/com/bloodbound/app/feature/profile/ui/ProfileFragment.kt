@@ -1,6 +1,6 @@
-// FILE: app/src/main/java/com/bloodbound/app/feature/profile/ui/ProfileFragment.kt
 package com.bloodbound.app.feature.profile.ui
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
@@ -11,9 +11,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
-import com.bloodbound.app.R
 import com.bloodbound.app.core.util.calcEligibility
 import com.bloodbound.app.core.util.formatBloodType
 import com.bloodbound.app.core.util.formatDisplayDate
@@ -66,38 +63,68 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
+    // ── Eligibility card coloring ─────────────────────────────────────
+
+    /**
+     * Applies green (eligible) or red (not eligible) theme to the
+     * ELIGIBILITY STATUS card — matches the web app exactly.
+     *
+     *  eligible = true  → #F0FDF4 fill · #16A34A stroke/text · ✅ icon
+     *  eligible = false → #FEF2F2 fill · #DC2626 stroke/text · ⏳ icon
+     */
+    private fun applyEligibilityCardColor(eligible: Boolean) {
+        val fillHex   = if (eligible) "#F0FDF4" else "#FEF2F2"
+        val strokeHex = if (eligible) "#16A34A" else "#DC2626"
+        val textColor = Color.parseColor(strokeHex)
+        val iconBgHex = if (eligible) "#D1FAE5" else "#FFD6D6"
+        val icon      = if (eligible) "✅" else "⏳"
+        val subText   = if (eligible)
+            "You are eligible to commit to active requests."
+        else
+            "56-day waiting period from your last donation date"
+
+        // Card background + stroke
+        binding.cardEligibility.setCardBackgroundColor(Color.parseColor(fillHex))
+        binding.cardEligibility.setStrokeColor(Color.parseColor(strokeHex))
+
+        // All text inside the card
+        binding.tvEligibilityLabel.setTextColor(textColor)
+        binding.tvEligibilityStatus.setTextColor(textColor)
+        binding.tvEligibilitySub.setTextColor(textColor)
+        binding.tvEligibilitySub.text = subText
+
+        // Icon pill background + icon
+        binding.cardEligibilityIcon.setCardBackgroundColor(Color.parseColor(iconBgHex))
+        binding.tvEligibilityIcon.text = icon
+    }
+
     // ── Click listeners ───────────────────────────────────────────────
 
     private fun setupClickListeners() {
-        // Camera FAB — open system photo picker
         binding.fabChangePhoto.setOnClickListener {
             pickPhotoLauncher.launch("image/*")
         }
 
-        // ── LOGOUT BUTTON WITH UI CONFIRMATION ──
-        // ── BULLETPROOF LOGOUT BUTTON ──
         binding.btnLogout.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Log Out")
                 .setMessage("Are you sure you want to log out of your account?")
-                .setNegativeButton("Cancel") { dialog, _ ->
-                    dialog.dismiss()
-                }
+                .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
                 .setPositiveButton("Log Out") { dialog, _ ->
-                    // 1. Wipe the secure data
                     viewModel.performLogout()
-
-                    // 2. The Nuclear Option: Completely restart the app's UI
-                    val intent = android.content.Intent(requireContext(), com.bloodbound.app.MainActivity::class.java)
-                    intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    val intent = android.content.Intent(
+                        requireContext(),
+                        com.bloodbound.app.MainActivity::class.java
+                    )
+                    intent.flags =
+                        android.content.Intent.FLAG_ACTIVITY_NEW_TASK or
+                                android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
-
                     dialog.dismiss()
                 }
                 .show()
         }
 
-        // Edit contact toggle
         binding.btnEditContact.setOnClickListener {
             val isVisible = binding.layoutEditContact.visibility == View.VISIBLE
             if (isVisible) {
@@ -115,7 +142,6 @@ class ProfileFragment : Fragment() {
             binding.layoutEditContact.visibility = View.GONE
         }
 
-        // Change password toggle
         binding.btnChangePassword.setOnClickListener {
             val isVisible = binding.layoutPassword.visibility == View.VISIBLE
             binding.layoutPassword.visibility = if (isVisible) View.GONE else View.VISIBLE
@@ -143,10 +169,7 @@ class ProfileFragment : Fragment() {
                 .into(binding.ivProfilePhoto)
 
             val inputStream = requireContext().contentResolver.openInputStream(uri)
-                ?: run {
-                    showToast("Cannot read selected photo.")
-                    return
-                }
+                ?: run { showToast("Cannot read selected photo."); return }
             val bytes = inputStream.readBytes()
             inputStream.close()
 
@@ -157,7 +180,6 @@ class ProfileFragment : Fragment() {
             val part = MultipartBody.Part.createFormData("file", extension, requestBody)
 
             viewModel.uploadPhoto(part)
-
         } catch (e: Exception) {
             showToast("Failed to process image: ${e.localizedMessage}")
         }
@@ -170,10 +192,7 @@ class ProfileFragment : Fragment() {
                 "&background=$color&color=fff&size=256&bold=true"
 
         if (base64String.isNullOrBlank()) {
-            Glide.with(requireContext())
-                .load(fallbackUrl)
-                .circleCrop()
-                .into(binding.ivProfilePhoto)
+            Glide.with(requireContext()).load(fallbackUrl).circleCrop().into(binding.ivProfilePhoto)
             return
         }
 
@@ -182,27 +201,22 @@ class ProfileFragment : Fragment() {
                 base64String.substringAfter(",")
             else
                 base64String
-
             val bytes = Base64.decode(rawBase64, Base64.DEFAULT)
-
             Glide.with(requireContext())
                 .load(bytes)
                 .circleCrop()
                 .placeholder(android.R.drawable.ic_menu_gallery)
                 .error(fallbackUrl)
                 .into(binding.ivProfilePhoto)
-
         } catch (e: Exception) {
-            Glide.with(requireContext())
-                .load(fallbackUrl)
-                .circleCrop()
-                .into(binding.ivProfilePhoto)
+            Glide.with(requireContext()).load(fallbackUrl).circleCrop().into(binding.ivProfilePhoto)
         }
     }
 
     // ── ViewModel observers ───────────────────────────────────────────
 
     private fun observeViewModel() {
+
         viewModel.profile.observe(viewLifecycleOwner) { profile ->
             profile ?: return@observe
             val isDonor = profile.role == "DONOR"
@@ -216,18 +230,21 @@ class ProfileFragment : Fragment() {
             binding.tvMemberSince.text = formatDisplayDate(profile.createdAt)
 
             if (isDonor) {
-                binding.tvBloodType.visibility    = View.VISIBLE
-                binding.tvBloodType.text          = formatBloodType(profile.bloodType)
-                binding.tvTotalDonations.text     = "${profile.totalDonations ?: 0}"
-                binding.tvLastDonation.text       = formatDisplayDate(profile.lastDonationDate)
+                binding.tvBloodType.visibility      = View.VISIBLE
+                binding.tvBloodType.text            = formatBloodType(profile.bloodType)
+                binding.tvTotalDonations.text       = "${profile.totalDonations ?: 0}"
+                binding.tvLastDonation.text         = formatDisplayDate(profile.lastDonationDate)
                 binding.layoutDonorStats.visibility = View.VISIBLE
                 binding.cardEligibility.visibility  = View.VISIBLE
 
+                // ✅ Calculate eligibility and apply card color immediately
                 val localElig = calcEligibility(profile.lastDonationDate)
                 binding.tvEligibilityStatus.text = if (localElig.eligible)
-                    "READY TO DONATE ✔️"
+                    "READY TO DONATE"
                 else
                     "Eligible in ${localElig.daysLeft} days ⏳"
+                applyEligibilityCardColor(localElig.eligible)
+
             } else {
                 binding.tvBloodType.visibility      = View.GONE
                 binding.layoutDonorStats.visibility = View.GONE
@@ -240,10 +257,16 @@ class ProfileFragment : Fragment() {
             val profile   = viewModel.profile.value
             val localCalc = calcEligibility(profile?.lastDonationDate)
 
-            binding.tvEligibilityStatus.text = if (elig.isEligible || localCalc.eligible)
-                "READY TO DONATE ✔️"
+            // Server result is authoritative — use OR so eligible wins
+            val isEligible = elig.isEligible || localCalc.eligible
+
+            binding.tvEligibilityStatus.text = if (isEligible)
+                "READY TO DONATE"
             else
                 "Eligible in ${localCalc.daysLeft} days ⏳"
+
+            // ✅ Apply correct card color based on server result
+            applyEligibilityCardColor(isEligible)
         }
 
         viewModel.isUploadingPhoto.observe(viewLifecycleOwner) { uploading ->

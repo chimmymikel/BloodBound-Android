@@ -1,14 +1,17 @@
 package com.bloodbound.app.feature.commitments.ui
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bloodbound.app.R
 import com.bloodbound.app.databinding.FragmentMyCommitmentsBinding
 import com.bloodbound.app.feature.commitments.data.CommitmentDto
 import com.bloodbound.app.feature.commitments.ui.adapter.CommitmentAdapter
@@ -41,15 +44,36 @@ class MyCommitmentsFragment : Fragment() {
     private fun setupTabs() {
         binding.btnTabActive.setOnClickListener {
             currentTab = "PENDING"
+            updateTabStyles()
             viewModel.commitments.value?.let { renderList(it) }
         }
         binding.btnTabCompleted.setOnClickListener {
             currentTab = "COMPLETED"
+            updateTabStyles()
             viewModel.commitments.value?.let { renderList(it) }
         }
         binding.btnTabCancelled.setOnClickListener {
             currentTab = "CANCELLED"
+            updateTabStyles()
             viewModel.commitments.value?.let { renderList(it) }
+        }
+        updateTabStyles() // apply initial state
+    }
+
+    private fun updateTabStyles() {
+        val activeColor   = ContextCompat.getColor(requireContext(), R.color.text_primary)
+        val inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_muted)
+        val whiteBg       = ContextCompat.getColor(requireContext(), R.color.surface_white)
+        val clearBg       = android.graphics.Color.TRANSPARENT
+
+        mapOf(
+            binding.btnTabActive    to "PENDING",
+            binding.btnTabCompleted to "COMPLETED",
+            binding.btnTabCancelled to "CANCELLED"
+        ).forEach { (btn, tab) ->
+            val isActive = currentTab == tab
+            btn.setTextColor(if (isActive) activeColor else inactiveColor)
+            btn.backgroundTintList = ColorStateList.valueOf(if (isActive) whiteBg else clearBg)
         }
     }
 
@@ -95,9 +119,9 @@ class MyCommitmentsFragment : Fragment() {
             binding.rvTickets.visibility = View.GONE
             binding.tvEmpty.visibility   = View.VISIBLE
             binding.tvEmpty.text = when (currentTab) {
-                "PENDING"   -> "🎫 No active tickets.\nCommit to a blood request to get started."
-                "COMPLETED" -> "✅ No completed donations yet."
-                else        -> "❌ No cancelled commitments."
+                "PENDING"   -> "No active tickets.\nCommit to a blood request to get started."
+                "COMPLETED" -> "No completed donations yet."
+                else        -> "No cancelled commitments."
             }
         } else {
             binding.tvEmpty.visibility   = View.GONE

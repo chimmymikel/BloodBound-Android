@@ -1,6 +1,6 @@
-// FILE: app/src/main/java/com/bloodbound/app/feature/dashboard/ui/DashboardFragment.kt
 package com.bloodbound.app.feature.dashboard.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +41,6 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
-        // binding.footer is a FooterComponentBinding — use .root to get the View
         FooterHelper.setup(binding.footer.root)
     }
 
@@ -63,10 +62,6 @@ class DashboardFragment : Fragment() {
 
     // ── Helpers ────────────────────────────────────────────────────────
 
-    /**
-     * Converts "2024-11-01T00:00:00" or "2024-11-01" → "Nov 1, 2024"
-     * Falls back to the raw string if parsing fails.
-     */
     private fun formatDate(raw: String?): String {
         if (raw.isNullOrBlank()) return "—"
         val cleanRaw = raw.substringBefore("T")
@@ -75,6 +70,26 @@ class DashboardFragment : Fragment() {
             val output = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
             output.format(input.parse(cleanRaw)!!)
         } catch (e: Exception) { raw }
+    }
+
+    /**
+     * Colors the YOUR STATUS card (id: card_stat1) to match the web:
+     *
+     *  GREEN   → #F0FDF4 fill + #16A34A stroke  (Ready to Donate)
+     *  RED     → #FEF2F2 fill + #DC2626 stroke  (Not yet eligible)
+     *  NEUTRAL → #FFFFFF  fill + #E5E7EB stroke  (Loading / unknown)
+     *
+     * The XML default is #FFF0F1 / #FDAFBC (pinkish), so we always
+     * override it explicitly to avoid the wrong color showing on load.
+     */
+    private fun applyStatusCardColor(ready: Boolean?) {
+        val (fill, stroke) = when (ready) {
+            true  -> "#F0FDF4" to "#16A34A"   // green
+            false -> "#FEF2F2" to "#DC2626"   // red
+            null  -> "#FFFFFF"  to "#E5E7EB"  // neutral / loading
+        }
+        binding.cardStat1.setCardBackgroundColor(Color.parseColor(fill))
+        binding.cardStat1.setStrokeColor(Color.parseColor(stroke))
     }
 
     // ── Observers ──────────────────────────────────────────────────────
@@ -87,21 +102,23 @@ class DashboardFragment : Fragment() {
 
             val isDonor = user.role == "DONOR"
 
+            // ✅ "Welcome," prefix restored
             binding.tvWelcome.text  = "Welcome, ${user.fullName?.toTitleCase()}\u00A0👋"
-
             binding.tvSubtitle.text = if (isDonor)
                 "Track eligibility and find nearby requests."
             else
                 "Manage requests and track donor commitments."
 
+            // ✅ Reset card to NEUTRAL on every reload so it never
+            //    shows the stale pinkish XML default colour
+            applyStatusCardColor(null)
+
             if (isDonor) {
 
-                // ── Row 1: YOUR STATUS (Full width card) ──────────────
                 binding.labelStat1.text = "YOUR STATUS"
                 binding.valueStat1.text = "Checking…"
                 binding.subStat1.text   = "Verifying eligibility with server"
 
-                // ── Row 2 Left: TOTAL DONATIONS ───────────────────────
                 val donations = user.totalDonations ?: 0
                 binding.labelStat3.text = "TOTAL DONATIONS"
                 binding.valueStat3.text = donations.toString()
@@ -110,64 +127,52 @@ class DashboardFragment : Fragment() {
                 else
                     "lifetime donations recorded"
 
-                // ── Row 2 Right: BLOOD TYPE ───────────────────────────
-                binding.labelStat2.text = "BLOOD TYPE"
-                binding.valueStat2.text = formatBloodType(user.bloodType)
+                binding.labelStat2.text     = "BLOOD TYPE"
+                binding.valueStat2.text     = formatBloodType(user.bloodType)
                 binding.valueStat2.textSize = 32f
-                binding.subStat2.text   = "Registered at sign-up"
+                binding.subStat2.text       = "Registered at sign-up"
 
-                // ── Row 3 Left: LAST DONATION DATE ────────────────────
                 binding.labelStat4.text = "LAST DONATION"
                 binding.valueStat4.text = if (!user.lastDonationDate.isNullOrBlank())
                     formatDate(user.lastDonationDate)
                 else
-                    "Never"
+                    "No Record"
                 binding.subStat4.text   = "last recorded date"
 
-                // ── Row 3 Right: MEMBER SINCE ─────────────────────────
                 binding.labelStat5.text = "MEMBER SINCE"
                 binding.valueStat5.text = formatDate(user.createdAt)
                 binding.subStat5.text   = "account created"
 
-                // ── Visibility ────────────────────────────────────────
-                binding.cardStat3Container.visibility  = View.VISIBLE
-                binding.rowStat45.visibility  = View.VISIBLE
-
-                binding.tvRequestsHeader.text = "Nearby Blood Requests"
+                binding.cardStat3Container.visibility = View.VISIBLE
+                binding.rowStat45.visibility          = View.VISIBLE
+                binding.tvRequestsHeader.text         = "Nearby Blood Requests"
 
             } else {
 
-                // ── Row 1: CURRENT STATUS (Full width card) ───────────
                 binding.labelStat1.text = "CURRENT STATUS"
                 binding.valueStat1.text = "Loading… 📡"
                 binding.subStat1.text   = "Checking your active requests"
 
-                // ── Row 2 Left: TOTAL POSTED ──────────────────────────
                 binding.labelStat3.text = "TOTAL POSTED"
                 binding.valueStat3.text = "—"
                 binding.subStat3.text   = "Lifetime emergency requests"
 
-                // ── Row 2 Right: SUCCESSFULLY FULFILLED ───────────────
-                binding.labelStat2.text = "SUCCESSFULLY FULFILLED"
-                binding.valueStat2.text = "—"
+                binding.labelStat2.text     = "SUCCESSFULLY FULFILLED"
+                binding.valueStat2.text     = "—"
                 binding.valueStat2.textSize = 32f
-                binding.subStat2.text   = "Requests with enough donors"
+                binding.subStat2.text       = "Requests with enough donors"
 
-                // ── Row 3 Left: CONTACT NUMBER ────────────────────────
                 binding.labelStat4.text = "CONTACT NUMBER"
                 binding.valueStat4.text = user.contactNumber ?: "—"
                 binding.subStat4.text   = "Primary phone contact for donors"
 
-                // ── Row 3 Right: MEMBER SINCE ─────────────────────────
                 binding.labelStat5.text = "MEMBER SINCE"
                 binding.valueStat5.text = formatDate(user.createdAt)
                 binding.subStat5.text   = "Thank you for being part of BloodBound"
 
-                // ── Visibility ────────────────────────────────────────
-                binding.cardStat3Container.visibility  = View.VISIBLE
-                binding.rowStat45.visibility  = View.VISIBLE
-
-                binding.tvRequestsHeader.text = "Your Active Requests"
+                binding.cardStat3Container.visibility = View.VISIBLE
+                binding.rowStat45.visibility          = View.VISIBLE
+                binding.tvRequestsHeader.text         = "Your Active Requests"
             }
         }
 
@@ -175,15 +180,17 @@ class DashboardFragment : Fragment() {
         viewModel.eligibility.observe(viewLifecycleOwner) { elig ->
             elig ?: return@observe
 
-            val userLastDonation = viewModel.user.value?.lastDonationDate
+            val userLastDonation  = viewModel.user.value?.lastDonationDate
             val eligibilityResult = calcEligibility(userLastDonation)
 
             if (eligibilityResult.eligible) {
-                binding.valueStat1.text = "Ready to Donate ✔️"
+                binding.valueStat1.text = "Ready to Donate"
                 binding.subStat1.text   = "You can commit to active requests."
+                applyStatusCardColor(true)   // ✅ GREEN
             } else {
                 binding.valueStat1.text = "Eligible in ${eligibilityResult.daysLeft} days ⏳"
                 binding.subStat1.text   = "56-day waiting period in progress."
+                applyStatusCardColor(false)  // ✅ RED
             }
 
             val currentState = viewModel.requestsState.value
@@ -192,7 +199,7 @@ class DashboardFragment : Fragment() {
             }
         }
 
-        // 3. Request list — loading / success / error
+        // 3. Request list
         viewModel.requestsState.observe(viewLifecycleOwner) { state ->
             when (state) {
 
@@ -220,10 +227,10 @@ class DashboardFragment : Fragment() {
                         else
                             "You currently have no emergency requests."
 
-                        // We map total requests to Stat3 now (Left side row 2)
-                        binding.valueStat3.text = state.requests.size.toString()
+                        // ✅ Color the card for REQUESTER too
+                        applyStatusCardColor(if (activeCount > 0) true else null)
 
-                        // We map fulfilled requests to Stat2 now (Right side row 2)
+                        binding.valueStat3.text = state.requests.size.toString()
                         val fulfilledCount = state.requests.count { it.status == "FULFILLED" }
                         binding.valueStat2.text = fulfilledCount.toString()
                     }
@@ -251,24 +258,42 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
+
+        // 4. Re-render when committed IDs change
+        viewModel.committedIds.observe(viewLifecycleOwner) {
+            val currentState = viewModel.requestsState.value
+            if (currentState is DashboardUiState.Success) {
+                setupAdapter(currentState.requests)
+            }
+        }
+
+        // 5. Re-render when pending commitment status changes
+        viewModel.hasPendingCommitment.observe(viewLifecycleOwner) {
+            val currentState = viewModel.requestsState.value
+            if (currentState is DashboardUiState.Success) {
+                setupAdapter(currentState.requests)
+            }
+        }
     }
 
     // ── Adapter ────────────────────────────────────────────────────────
 
     private fun setupAdapter(requests: List<RequestDto>) {
-        val isDonor = viewModel.user.value?.role == "DONOR"
-
-        val userLastDonation = viewModel.user.value?.lastDonationDate
+        val isDonor           = viewModel.user.value?.role == "DONOR"
+        val userLastDonation  = viewModel.user.value?.lastDonationDate
         val eligibilityResult = calcEligibility(userLastDonation)
 
         val filtered = if (isDonor) requests
         else requests.filter { it.status == "ACTIVE" }
 
         binding.rvRequests.adapter = RequestSummaryAdapter(
-            items             = filtered,
-            isDonor           = isDonor,
-            isEligible        = eligibilityResult.eligible,
-            daysUntilEligible = eligibilityResult.daysLeft
+            items               = filtered,
+            isDonor             = isDonor,
+            isEligible          = eligibilityResult.eligible,
+            daysUntilEligible   = eligibilityResult.daysLeft,
+            committedIds        = viewModel.committedIds.value ?: emptySet(),
+            hasActiveCommitment = viewModel.hasPendingCommitment.value ?: false,
+            onCommit            = { req -> viewModel.commitToDonate(req.id) }
         )
     }
 }

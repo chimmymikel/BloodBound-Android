@@ -3,6 +3,7 @@ package com.bloodbound.app.feature.commitments.ui.adapter
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bloodbound.app.core.util.formatBloodType
@@ -23,9 +24,9 @@ class CommitmentAdapter(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val t       = items[position]
-        val b       = holder.b
-        val pending = t.status == "PENDING"
+        val t = items[position]
+        val b = holder.b
+        val isPending = t.status == "PENDING"
 
         b.tvStatus.text    = t.status
         b.tvReference.text = t.referenceNumber ?: "DON-—"
@@ -35,21 +36,24 @@ class CommitmentAdapter(
         b.tvUrgency.text   = t.urgency ?: ""
 
         if (t.status == "CANCELLED") {
-            b.tvContact.text   = "Contact unavailable"
+            b.tvContact.text   = "Unavailable"
             b.tvRequester.text = ""
         } else {
             b.tvContact.text   = "📞 ${t.requesterContactNumber ?: "—"}"
             b.tvRequester.text = "👤 ${t.requesterName ?: "—"}"
         }
 
-        // Only show action buttons for PENDING tickets
-        b.btnDirections.visibility = if (pending) android.view.View.VISIBLE else android.view.View.GONE
-        b.btnCancel.visibility     = if (pending) android.view.View.VISIBLE else android.view.View.GONE
+        // Show divider + actions together only for PENDING
+        val actionVisibility = if (isPending) View.VISIBLE else View.GONE
+        b.divider.visibility       = actionVisibility
+        b.layoutActions.visibility = actionVisibility
 
         b.btnDirections.setOnClickListener {
             val query  = Uri.encode(t.hospitalName ?: "hospital cebu city")
-            val intent = Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.google.com/maps/search/?api=1&query=$query"))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.google.com/maps/search/?api=1&query=$query")
+            )
             it.context.startActivity(intent)
         }
 

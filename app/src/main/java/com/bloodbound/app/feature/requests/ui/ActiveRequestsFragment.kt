@@ -28,7 +28,11 @@ class ActiveRequestsFragment : Fragment() {
 
     private var currentFilter: String = "ALL"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentActiveRequestsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -82,7 +86,6 @@ class ActiveRequestsFragment : Fragment() {
             tv.setBackgroundResource(R.drawable.bg_filter_inactive)
             tv.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
         }
-
         selectedView.setBackgroundResource(R.drawable.bg_filter_active)
         selectedView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_primary))
     }
@@ -98,7 +101,7 @@ class ActiveRequestsFragment : Fragment() {
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user ?: return@observe
             val isDonor = user.role == "DONOR"
-            binding.tvTitle.text    = "Active Requests 🚨"
+            binding.tvTitle.text    = "Active Requests"
             binding.tvSubtitle.text = if (isDonor)
                 "Browse emergencies and active requests."
             else
@@ -128,6 +131,18 @@ class ActiveRequestsFragment : Fragment() {
             }
         }
 
+        // ✅ FIXED — re-render list when committedIds updates
+        // (e.g. right after the user commits to a request)
+        viewModel.committedIds.observe(viewLifecycleOwner) {
+            reRenderList()
+        }
+
+        // ✅ FIXED — re-render list when pending commitment status changes
+        // so other requests immediately flip to "Unavailable"
+        viewModel.hasPendingCommitment.observe(viewLifecycleOwner) {
+            reRenderList()
+        }
+
         viewModel.toast.observe(viewLifecycleOwner) { msg ->
             msg ?: return@observe
             Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
@@ -149,35 +164,44 @@ class ActiveRequestsFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.tvError.visibility     = View.GONE
 
+        // ✅ FIXED — filter by actual urgency field, not toString()
         val filteredList = if (currentFilter == "ALL") {
             state.requests
         } else {
-            state.requests.filter { it.toString().contains(currentFilter, ignoreCase = true) }
+            state.requests.filter {
+                it.urgency.equals(currentFilter, ignoreCase = true)
+            }
         }
 
         if (filteredList.isEmpty()) {
             binding.rvRequests.visibility = View.GONE
             binding.tvEmpty.visibility    = View.VISIBLE
-            binding.tvEmpty.text = if (state.requests.isEmpty()) "No active requests right now." else "No $currentFilter requests found."
+            binding.tvEmpty.text = if (state.requests.isEmpty())
+                "No active requests right now."
+            else
+                "No $currentFilter requests found."
         } else {
             binding.tvEmpty.visibility    = View.GONE
             binding.rvRequests.visibility = View.VISIBLE
 
-            val user   = viewModel.user.value ?: return
+            val user    = viewModel.user.value ?: return
             val isDonor = user.role == "DONOR"
 
             if (isDonor) {
-                val elig       = calcEligibility(user.lastDonationDate)
-                val committed  = viewModel.committedIds.value ?: emptySet()
-                val hasActive  = committed.isNotEmpty()
+                val elig      = calcEligibility(user.lastDonationDate)
+                val committed = viewModel.committedIds.value ?: emptySet()
+
+                // ✅ FIXED — use dedicated hasPendingCommitment flag
+                // instead of committed.isNotEmpty() which wrongly includes COMPLETED
+                val hasActive = viewModel.hasPendingCommitment.value ?: false
 
                 binding.rvRequests.adapter = DonorRequestAdapter(
-                    items                = filteredList,
-                    committedIds         = committed,
-                    isEligible           = elig.eligible,
-                    daysLeft             = elig.daysLeft,
-                    hasActiveCommitment  = hasActive,
-                    onCommit             = { requestId ->
+                    items               = filteredList,
+                    committedIds        = committed,
+                    isEligible          = elig.eligible,
+                    daysLeft            = elig.daysLeft,
+                    hasActiveCommitment = hasActive,
+                    onCommit            = { requestId ->
                         viewModel.commitToDonate(requestId)
                     }
                 )

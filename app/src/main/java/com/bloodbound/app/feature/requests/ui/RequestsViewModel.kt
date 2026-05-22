@@ -38,6 +38,10 @@ class RequestsViewModel @Inject constructor(
     private val _committedIds = MutableLiveData<Set<Long>>(emptySet())
     val committedIds: LiveData<Set<Long>> = _committedIds
 
+    // ✅ NEW — tracks whether user has an active PENDING commitment
+    private val _hasPendingCommitment = MutableLiveData(false)
+    val hasPendingCommitment: LiveData<Boolean> = _hasPendingCommitment
+
     private val _hospitals = MutableLiveData<List<HospitalDto>>(emptyList())
     val hospitals: LiveData<List<HospitalDto>> = _hospitals
 
@@ -63,7 +67,14 @@ class RequestsViewModel @Inject constructor(
                     mapOf("donorId" to user.id.toString())
                 )
                 if (commitsResult is ApiResult.Success) {
-                    _committedIds.value = commitsResult.data
+                    val allCommits = commitsResult.data
+
+                    // ✅ FIXED — only PENDING blocks the user from new commits
+                    _hasPendingCommitment.value = allCommits.any { it.status == "PENDING" }
+
+                    // committedIds still includes PENDING + COMPLETED
+                    // so we can show "✔ Committed" on requests the user already joined
+                    _committedIds.value = allCommits
                         .filter { it.status == "PENDING" || it.status == "COMPLETED" }
                         .map { it.requestId }
                         .toSet()
@@ -102,6 +113,9 @@ class RequestsViewModel @Inject constructor(
             when (val r = commitmentsRepository.createCommitment(requestId)) {
                 is ApiResult.Success -> {
                     _committedIds.value = (_committedIds.value ?: emptySet()) + requestId
+                    // ✅ FIXED — immediately flag that user now has a pending commitment
+                    // so other requests switch to "Unavailable" right away
+                    _hasPendingCommitment.value = true
                     _toast.value = "Committed! Go to My Commitments for details. 🩸"
                     _navigateToCommitments.value = true
                 }
@@ -138,6 +152,6 @@ class RequestsViewModel @Inject constructor(
         }
     }
 
-    fun clearToast()                { _toast.value = null }
-    fun clearNavigateToCommitments(){ _navigateToCommitments.value = false }
+    fun clearToast()                 { _toast.value = null }
+    fun clearNavigateToCommitments() { _navigateToCommitments.value = false }
 }

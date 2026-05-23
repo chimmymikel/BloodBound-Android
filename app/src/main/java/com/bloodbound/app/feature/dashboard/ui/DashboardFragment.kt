@@ -44,7 +44,6 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeViewModel()
-        // REMOVED: FooterHelper.setup(binding.footer.root) from here to prevent the blank footer bug
     }
 
     override fun onResume() {
@@ -55,7 +54,7 @@ class DashboardFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        isFooterSetup = false // Reset flag when view is destroyed
+        isFooterSetup = false
     }
 
     // ── Setup ──────────────────────────────────────────────────────────
@@ -86,10 +85,10 @@ class DashboardFragment : Fragment() {
      */
     private fun applyStatusCardColor(state: String) {
         val (fill, stroke, iconFill) = when (state) {
-            "DONOR_READY" -> Triple("#F0FDF4", "#16A34A", "#DCFCE7") // Green theme
-            "DONOR_WAIT"  -> Triple("#FEF2F2", "#DC2626", "#FFD6D6") // Red theme
-            "REQ_ACTIVE"  -> Triple("#EFF6FF", "#BFDBFE", "#DBEAFE") // Blue theme
-            else          -> Triple("#FFFFFF", "#E5E7EB", "#F3F4F6") // Neutral / loading
+            "DONOR_READY" -> Triple("#F0FDF4", "#16A34A", "#DCFCE7")
+            "DONOR_WAIT"  -> Triple("#FEF2F2", "#DC2626", "#FFD6D6")
+            "REQ_ACTIVE"  -> Triple("#EFF6FF", "#BFDBFE", "#DBEAFE")
+            else          -> Triple("#FFFFFF", "#E5E7EB", "#F3F4F6")
         }
 
         binding.cardStat1.setCardBackgroundColor(Color.parseColor(fill))
@@ -107,7 +106,6 @@ class DashboardFragment : Fragment() {
 
             val isDonor = user.role == "DONOR"
 
-            // ✅ Setup the footer ONLY AFTER we know the user's role
             if (!isFooterSetup) {
                 FooterHelper.setup(binding.footer.root)
                 isFooterSetup = true
@@ -119,7 +117,6 @@ class DashboardFragment : Fragment() {
             else
                 "Manage requests and track donor commitments."
 
-            // Reset card to NEUTRAL on every reload
             applyStatusCardColor("NEUTRAL")
 
             if (isDonor) {
@@ -128,7 +125,7 @@ class DashboardFragment : Fragment() {
 
                 binding.labelStat1.text = "YOUR STATUS"
                 binding.valueStat1.text = "Checking…"
-                binding.valueStat1.setTextColor(Color.parseColor("#111827")) // default text color
+                binding.valueStat1.setTextColor(Color.parseColor("#111827"))
                 binding.subStat1.text   = "Verifying eligibility with server"
 
                 val donations = user.totalDonations ?: 0
@@ -165,7 +162,7 @@ class DashboardFragment : Fragment() {
 
                 binding.labelStat1.text = "CURRENT STATUS"
                 binding.valueStat1.text = "Loading…"
-                binding.valueStat1.setTextColor(Color.parseColor("#111827")) // default text color
+                binding.valueStat1.setTextColor(Color.parseColor("#111827"))
                 binding.subStat1.text   = "Checking your active requests"
 
                 binding.labelStat3.text = "TOTAL POSTED"
@@ -201,13 +198,15 @@ class DashboardFragment : Fragment() {
             if (eligibilityResult.eligible) {
                 binding.valueStat1.text = "Ready to Donate"
                 binding.subStat1.text   = "You can commit to active requests."
-                binding.valueStat1.setTextColor(Color.parseColor("#16A34A")) // Green text
+                binding.valueStat1.setTextColor(Color.parseColor("#16A34A"))
                 binding.tvStat1Icon.text = "✅"
                 applyStatusCardColor("DONOR_READY")
             } else {
-                binding.valueStat1.text = "Eligible in ${eligibilityResult.daysLeft} days"
+                // ✅ Fixed: singular "day" vs plural "days"
+                val dayWord = if (eligibilityResult.daysLeft == 1) "day" else "days"
+                binding.valueStat1.text = "Eligible in ${eligibilityResult.daysLeft} $dayWord"
                 binding.subStat1.text   = "56-day waiting period in progress."
-                binding.valueStat1.setTextColor(Color.parseColor("#DC2626")) // Red text
+                binding.valueStat1.setTextColor(Color.parseColor("#DC2626"))
                 binding.tvStat1Icon.text = "⏳"
                 applyStatusCardColor("DONOR_WAIT")
             }
@@ -241,13 +240,13 @@ class DashboardFragment : Fragment() {
                         if (activeCount > 0) {
                             val reqWord = if (activeCount == 1) "Request" else "Requests"
                             binding.valueStat1.text = "$activeCount Active $reqWord"
-                            binding.valueStat1.setTextColor(Color.parseColor("#2563EB")) // Standard Blue
+                            binding.valueStat1.setTextColor(Color.parseColor("#2563EB"))
                             binding.subStat1.text = "Monitoring incoming donor commitments."
                             binding.tvStat1Icon.text = "📡"
                             applyStatusCardColor("REQ_ACTIVE")
                         } else {
                             binding.valueStat1.text = "No Active Requests"
-                            binding.valueStat1.setTextColor(Color.parseColor("#111827")) // Default Dark
+                            binding.valueStat1.setTextColor(Color.parseColor("#111827"))
                             binding.subStat1.text = "You currently have no emergency requests."
                             binding.tvStat1Icon.text = "💤"
                             applyStatusCardColor("NEUTRAL")

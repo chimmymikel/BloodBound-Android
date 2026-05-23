@@ -8,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.bloodbound.app.MainActivity
 import com.bloodbound.app.R
 import com.bloodbound.app.databinding.FragmentRegisterBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -148,19 +147,12 @@ class RegisterFragment : Fragment() {
             when (state) {
                 is AuthState.Loading -> {
                     binding.btnSubmit.isEnabled = false
-                    binding.btnSubmit.text = "Creating Account…"
+                    binding.btnSubmit.text = getString(R.string.btn_creating_account)
                     hideError()
                 }
                 is AuthState.Success -> {
-                    // Update MainActivity Bottom Nav Setup Here too!
-                    val isDonor = state.role == "DONOR"
-                    (requireActivity() as MainActivity).setupBottomNav(isDonor)
-
-                    // Navigate to Main Graph
-                    if (findNavController().currentDestination?.parent?.id == R.id.auth_graph) {
-                        findNavController().navigate(R.id.action_auth_to_main)
-                        viewModel.resetState()
-                    }
+                    // ✅ Fixed: was action_register_to_dashboard (didn't exist)
+                    findNavController().navigate(R.id.action_auth_to_main)
                 }
                 is AuthState.Error -> {
                     binding.btnSubmit.isEnabled = true

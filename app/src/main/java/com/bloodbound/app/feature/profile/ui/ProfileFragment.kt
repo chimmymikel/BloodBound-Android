@@ -242,7 +242,7 @@ class ProfileFragment : Fragment() {
                 binding.tvEligibilityStatus.text = if (localElig.eligible)
                     "READY TO DONATE"
                 else
-                    "Eligible in ${localElig.daysLeft} days ⏳"
+                    "Eligible in ${localElig.daysLeft} days"
                 applyEligibilityCardColor(localElig.eligible)
 
             } else {
@@ -263,7 +263,7 @@ class ProfileFragment : Fragment() {
             binding.tvEligibilityStatus.text = if (isEligible)
                 "READY TO DONATE"
             else
-                "Eligible in ${localCalc.daysLeft} days ⏳"
+                "Eligible in ${localCalc.daysLeft} days"
 
             // ✅ Apply correct card color based on server result
             applyEligibilityCardColor(isEligible)

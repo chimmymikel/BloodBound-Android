@@ -34,4 +34,5 @@
     <color name="requester_border">#BFDBFE</color>
 
     <color name="transparent">#00000000</color>
+    <color name="gray_500">#6B7280</color>
 </resources>

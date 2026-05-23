@@ -1,4 +1,3 @@
-// FILE: app/src/main/java/com/bloodbound/app/MainActivity.kt
 package com.bloodbound.app
 
 import android.os.Bundle
@@ -16,7 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() { // ✅ REVERTED TO AppCompatActivity FOR HILT
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -61,11 +60,19 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isMainGraph = destination.parent?.id == R.id.main_graph
 
-            binding.bottomNav.visibility =
-                if (isMainGraph) View.VISIBLE else View.GONE
+            if (isMainGraph) {
+                binding.bottomNav.visibility = View.VISIBLE
+                binding.appBarLayout.visibility = View.VISIBLE
 
-            binding.appBarLayout.visibility =
-                if (isMainGraph) View.VISIBLE else View.GONE
+                // 🩸 THE FIX: If the menu is empty (like right after registration), populate it!
+                if (binding.bottomNav.menu.size() == 0) {
+                    val user = tokenManager.getUser()
+                    setupBottomNav(user?.role == "DONOR")
+                }
+            } else {
+                binding.bottomNav.visibility = View.GONE
+                binding.appBarLayout.visibility = View.GONE
+            }
         }
     }
 
@@ -80,7 +87,8 @@ class MainActivity : AppCompatActivity() {
     private fun showLogoutDialog() {
         val dialog = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
             .setTitle("Log Out")
-            .setMessage("Are you sure you want to log out?")
+            // ✅ Updated the message to match your exact design
+            .setMessage("Are you sure you want to log out of your account?")
             .setPositiveButton("Log Out") { d, _ ->
                 d.dismiss()
                 performLogout()
@@ -90,11 +98,11 @@ class MainActivity : AppCompatActivity() {
             }
             .show()
 
-        // Set AFTER show() so Material3 doesn't override it
+        // ✅ Made BOTH buttons red to match the attached screenshot
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(android.graphics.Color.parseColor("#DC2626"))
+            ?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            .setTextColor(android.graphics.Color.parseColor("#64748B"))
+            ?.setTextColor(android.graphics.Color.parseColor("#DC2626"))
     }
 
     private fun performLogout() {
@@ -111,5 +119,4 @@ class MainActivity : AppCompatActivity() {
 
         navController.navigate(R.id.auth_graph, null, navOptions)
     }
-    // ──────────────────────────────────────────────────────────────────────
 }

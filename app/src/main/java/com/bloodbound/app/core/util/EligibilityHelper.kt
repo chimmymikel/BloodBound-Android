@@ -14,7 +14,7 @@ fun calcEligibility(lastDonationDate: String?): EligibilityResult {
         val diffDays = ChronoUnit.DAYS.between(last, now)
 
         val eligible = diffDays >= 56
-        val daysLeft = if (eligible) 0 else maxOf((56 - diffDays - 1).toInt(), 0)
+        val daysLeft = if (eligible) 0 else (56 - diffDays).toInt()
 
         EligibilityResult(eligible = eligible, daysLeft = daysLeft)
     } catch (e: Exception) {
